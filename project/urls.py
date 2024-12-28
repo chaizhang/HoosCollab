@@ -25,9 +25,6 @@ urlpatterns = [
     # /project/<org_id>/task/<task_id>/message/<message_id>/delete
     path('<int:org_id>/task/<int:task_id>/message/<int:message_id>/delete/', views.delete_task_message, name='delete_task_message'),
 
-    # /project/join_request
-    path('<int:org_id>/<int:task_id>/join_request/', views.join_request_view, name='join_request'),
-
     # /project/media/<org_id>/<file_id>
     path('media/<int:org_id>/<int:file_id>/', views.serve_taskfile, name='serve_taskfile'),
 
@@ -36,4 +33,10 @@ urlpatterns = [
 
     # /project/<org_id>/task/<task_id>/delete
     path('<int:org_id>/task/<int:task_id>/delete/', views.delete_task_confirm, name="delete_task_confirm"),
-]
+
+    path('<int:org_id>/<int:task_id>/manage_requests/', views.manage_join_requests, name='manage_join_requests'),
+
+    path('<int:org_id>/<int:task_id>/join_request/', views.join_request_view, name='join_request'),
+
+    path('<int:org_id>/<int:task_id>/send_join_request/', views.send_join_request, name='send_join_request'),
+]   

@@ -1,4 +1,5 @@
 import boto3
+from django.utils import timezone
 from botocore.exceptions import ClientError
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -8,7 +9,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import TaskFileForm, ProjectForm, ProjectDeleteForm, CreateTaskForm, EditTaskForm, TaskMessageForm
-from .models import TaskFile, UserInOrg, Project, Task, Org, UserAssignedToTask, TaskMessage
+from .models import TaskFile, Project, Task, Org, UserAssignedToTask, TaskMessage, TaskJoinRequest
 
 
 class index(TemplateView):    
@@ -286,11 +287,14 @@ def org_project_list(request, org_id):
             # create a TaskMessageForm instance for each task
             message_form = TaskMessageForm()
 
+            join_request_sent = TaskJoinRequest.objects.filter(task=task, user=request.user, status='pending').exists()
+
             tasks_with_collaborators.append({
                 'task': task,
                 'collaborators': collaborators,
                 'files': files,
                 'is_task_collaborator': is_task_collaborator,
+                'join_request_sent': join_request_sent,
                 'messages': task_messages,
                 'message_form': message_form,
             })
@@ -322,17 +326,6 @@ def org_project_list(request, org_id):
         'project_tasks': project_tasks,
         'org_id': org_id,
         'is_pma_admin': is_pma_admin,
-    })
-
-
-@login_required
-def join_request_view(request, org_id, task_id):
-    org = get_object_or_404(Org, pk=org_id)
-    task = get_object_or_404(Task, pk=task_id)
-
-    return render(request, 'project/join_request.html', {
-        'org': org,
-        'task': task,
     })
 
 
@@ -403,3 +396,102 @@ def public_org_project_list(request):
 
     return render(request, 'project/public_org_project_list.html', {'org_projects': org_projects})
 
+
+@login_required
+def join_request_view(request, org_id, task_id):
+    task = get_object_or_404(Task, pk=task_id, project_id__org_id=org_id)
+    join_request = TaskJoinRequest.objects.filter(user=request.user, task=task).first()
+    is_task_collaborator = UserAssignedToTask.objects.filter(task_id=task, user_id=request.user).exists()
+
+    # print statements for debugging
+    # print("is task collaborator: ", is_task_collaborator)
+    # print("join request: ", join_request)
+    
+    can_resend = True
+    if join_request and join_request.status == 'dismissed':
+        can_resend = join_request.can_resend()
+
+    return render(request, 'project/join_request.html', {
+        'task': task,
+        'join_request': join_request,
+        'can_resend': can_resend,
+        'is_task_collaborator': is_task_collaborator,
+    })
+
+
+@login_required
+def send_join_request(request, org_id, task_id):
+    task = get_object_or_404(Task, pk=task_id, project_id__org_id=org_id)
+
+    if request.method == 'POST':
+        # check if the user is already a collaborator
+        if UserAssignedToTask.objects.filter(task_id=task, user_id=request.user).exists():
+            messages.info(request, "You are already a collaborator for this task.")
+            return redirect('join_request', org_id=org_id, task_id=task_id)
+
+        # check if there's an existing join request
+        join_request = TaskJoinRequest.objects.filter(user=request.user, task=task).first()
+
+        if join_request:
+            if join_request.status == 'approved':
+                # allow creating a new request if the user was previously approved but is no longer a collaborator
+                join_request.status = 'pending'
+                join_request.requested_at = timezone.now()
+                join_request.save()
+                messages.success(request, "A new join request has been sent!")
+            elif join_request.status == 'pending':
+                messages.info(request, "You have already sent a join request. Please wait for approval.")
+            elif join_request.can_resend():
+                join_request.status = 'pending'
+                join_request.dismissed_at = None
+                join_request.requested_at = timezone.now()
+                join_request.save()
+                messages.success(request, "You have successfully re-sent your join request.")
+            else:
+                messages.error(request, "You cannot resend a join request until 1 minute after dismissal.")
+        else:
+            # create a new join request if none exists
+            TaskJoinRequest.objects.create(user=request.user, task=task, status='pending')
+            messages.success(request, "A join request has been sent! Check back later for the status.")
+
+        return redirect('join_request', org_id=org_id, task_id=task_id)
+
+    return redirect('join_request', org_id=org_id, task_id=task_id)
+
+
+@login_required
+def manage_join_requests(request, org_id, task_id):
+    task = get_object_or_404(Task, pk=task_id, project_id__org_id=org_id)
+    is_collaborator = UserAssignedToTask.objects.filter(task_id=task, user_id=request.user).exists()
+    is_owner = task.project_id.user_id == request.user
+
+    if not (is_collaborator or is_owner):
+        messages.error(request, "You are not authorized to manage this task's join requests.")
+        return redirect('manage_join_requests', org_id=org_id, task_id=task_id)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        request_id = request.POST.get('request_id')
+        join_request = get_object_or_404(TaskJoinRequest, pk=request_id, task=task)
+
+        user_display_name = join_request.user.get_full_name() or join_request.user.username
+
+        if action == 'approve':
+            join_request.status = 'approved'
+            join_request.save()
+            UserAssignedToTask.objects.create(task_id=task, user_id=join_request.user)
+            messages.success(request, f"Join request from {user_display_name} approved.")
+        elif action == 'dismiss':
+            join_request.status = 'dismissed'
+            join_request.dismissed_at = timezone.now()
+            join_request.save()
+            messages.info(request, f"Join request from {user_display_name} dismissed.")
+
+        return redirect('manage_join_requests', org_id=org_id, task_id=task_id)
+
+    pending_requests = TaskJoinRequest.objects.filter(task=task, status='pending')
+    return render(request, 'project/manage_requests.html', {
+        'task': task,
+        'pending_requests': pending_requests,
+        'org_id': org_id,
+    })

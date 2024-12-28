@@ -429,6 +429,15 @@ form .checkbox-label {
     border: 1.5px solid var(--border-color);
     box-shadow: 0 4px 8px lightgray;
 }
+.task-collaborators-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.0rem;
+}
+.task-collaborators-header h4 {
+    margin-bottom: 0;
+}
 .task-due-date,
 .task-status {
     flex: 1;
@@ -675,6 +684,11 @@ form .checkbox-label {
 .user-mode .btn:hover {
     background-color: #c86401;
     border: 1.5px solid #c86401;
+    color: white;
+}
+.user-mode .btn:disabled {
+    background-color: var(--blue-25);
+    border: 1.5px solid var(--blue-25);
     color: white;
 }
 
@@ -980,4 +994,13 @@ form .checkbox-label {
 }
 .uploaded-files .file-link:hover {
     color: var(--orange);
+}
+
+/* MANAGE JOIN REQUEST PAGE */
+.join-request-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 2.0rem;
 }

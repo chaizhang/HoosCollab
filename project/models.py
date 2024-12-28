@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import timedelta
+from django.utils.timezone import now, timedelta
 
 
 class Org(models.Model):
@@ -98,7 +100,7 @@ class UserAssignedToTask(models.Model):
     def __str__(self):
         return f'User {self.user_id} assigned to Task {self.task_id}'
     
-
+    
 class TaskMessage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
@@ -107,3 +109,24 @@ class TaskMessage(models.Model):
 
     def __str__(self):
         return f'{self.user.username}: {self.content}'
+    
+
+class TaskJoinRequest(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('dismissed', 'Dismissed'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    status = models.CharField(choices=STATUS_CHOICES, max_length=10, default='pending')
+    requested_at = models.DateTimeField(auto_now_add=True)
+    dismissed_at = models.DateTimeField(null=True, blank=True)
+
+    def can_resend(self):
+        # allow resending a join request 24 hours after dismissal
+        if self.status == 'dismissed' and self.dismissed_at:
+            return now() >= self.dismissed_at + timedelta(minutes=1)
+        return False
+

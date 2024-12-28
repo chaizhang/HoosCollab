@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+
 {% if messages %}
 <script>
     // wait for the DOM to be fully loaded
@@ -69,11 +70,16 @@
                                         {% if project_data.is_project_owner or is_pma_admin or task_data.is_task_collaborator %}
                                         <div class="task-button-container">
                                             <a href="{% url 'edit_task' org_id=org.org_id task_id=task_data.task.task_id %}" class="outline-btn-sm">Edit Task</a>
-                                            <a href="{% url 'delete_task_confirm' org_id=org.org_id task_id=task_data.task.task_id %}" class="outline-btn-sm">Delete Task</a>
-                                        </div>
+                                            {% if project_data.is_project_owner or is_pma_admin %}
+                                                <a href="{% url 'delete_task_confirm' org_id=org.org_id task_id=task_data.task.task_id %}" class="outline-btn-sm">Delete Task</a>
+                                            {% endif %}
+                                            </div>
                                         {% else %}  
                                             {% if not request.session.is_pma_admin %}
-                                                <a href="{% url 'join_request' org_id=org.org_id task_id=task_data.task.task_id %}" class="outline-btn-sm">Join Request</a>
+                                                {% if not task_data.is_task_collaborator %}
+                                                        <!-- <a href="{% url 'send_join_request' org_id=org.org_id task_id=task_data.task.task_id %}" class="outline-btn-sm">Join Request</a> -->
+                                                        <a href="{% url 'join_request' org_id=org.org_id task_id=task_data.task.task_id %}" class="outline-btn-sm">Join Request</a>
+                                                {% endif %}
                                             {% endif %}
                                         {% endif %}
                                     </div>
@@ -81,7 +87,12 @@
                                 
                                 <div class="task-info-row">
                                     <div class="task-collaborators">
-                                        <h4>Collaborators</h4>
+                                        <div class="task-collaborators-header">
+                                            <h4>Collaborators</h4>
+                                            {% if project_data.is_project_owner or task_data.is_task_collaborator %}
+                                                <a href="{% url 'manage_join_requests' org_id=org.org_id task_id=task_data.task.task_id %}" class="outline-btn-sm">Edit</a>
+                                            {% endif %}
+                                        </div>
                                         <p>
                                             {% if task_data.collaborators %}
                                                 {% for collaborator in task_data.collaborators %}
