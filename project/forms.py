@@ -140,17 +140,6 @@ class EditTaskForm(forms.ModelForm):
             'task_status': forms.Select(choices=Task.STATUS_CHOICES),
         }
 
-    # def __init__(self, *args, user=None, org_id=None, project_owner_id=None, instance=None, **kwargs):
-    #     super().__init__(*args, instance=instance, **kwargs)
-    #     self.user = user
-
-    #     # exclude project owner from collaborators
-    #     self.fields['collaborators'].queryset = User.objects.filter(userinorg__org_id=org_id).exclude(id=project_owner_id)
-
-    #     # pre-select current collaborators
-    #     if instance:
-    #         self.fields['collaborators'].initial = instance.userassignedtotask_set.values_list('user_id', flat=True)
-
     def __init__(self, *args, user=None, org_id=None, project_owner_id=None, instance=None, **kwargs):
         super().__init__(*args, instance=instance, **kwargs)
         self.user = user
@@ -183,6 +172,48 @@ class EditTaskForm(forms.ModelForm):
                 # add any new collaborators
                 for collaborator in self.cleaned_data['collaborators']:
                     if collaborator != project_owner:  # avoid duplicating the project owner
+                        UserAssignedToTask.objects.create(task_id=task, user_id=collaborator)
+        return task
+
+
+class ManageCollaboratorsForm(forms.ModelForm):
+    collaborators = forms.ModelMultipleChoiceField(
+        queryset=User.objects.none(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+
+    class Meta:
+        model = Task
+        fields = ['collaborators']
+
+    def __init__(self, *args, org_id=None, project_owner_id=None, instance=None, **kwargs):
+        super().__init__(*args, instance=instance, **kwargs)
+
+        # fetch organization users excluding the project owner
+        org_users = User.objects.filter(userinorg__org_id=org_id).exclude(id=project_owner_id)
+        self.fields['collaborators'].queryset = org_users
+
+        # pre-select collaborators
+        if instance:
+            self.fields['collaborators'].initial = instance.userassignedtotask_set.values_list('user_id', flat=True)
+
+    def save(self, commit=True):
+        task = super().save(commit=False)
+        if commit:
+            task.save()
+
+            # retrieve the project owner
+            project_owner = task.project_id.user_id
+
+            if 'collaborators' in self.cleaned_data:
+                # delete previously assigned collaborators
+                UserAssignedToTask.objects.filter(task_id=task).delete()
+                # add project/task creator as a collaborator
+                UserAssignedToTask.objects.create(task_id=task, user_id=project_owner)
+                # add any new collaborators
+                for collaborator in self.cleaned_data['collaborators']:
+                    if collaborator != project_owner:  # Avoid duplicating the project owner
                         UserAssignedToTask.objects.create(task_id=task, user_id=collaborator)
         return task
 

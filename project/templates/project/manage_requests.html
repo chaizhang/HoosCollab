@@ -1,59 +1,37 @@
 {% extends 'base.html' %}
 {% block content %}
 
-{% if messages %}
-<script>
-    // wait for the DOM to be fully loaded
-    document.addEventListener('DOMContentLoaded', function () {
-        const banner = document.getElementById('messages-banner');
-
-        if (banner) {
-            // automatically hide the banner after 3 seconds
-            setTimeout(function () {
-                banner.style.transition = "opacity 0.5s ease-out"; // add smooth transition
-                banner.style.opacity = "0"; // set opacity to 0 (fade-out effect)
-
-                // remove the banner from the DOM after the transition ends
-                setTimeout(function () {
-                    banner.remove();
-                }, 500); // match this timeout with the CSS transition duration
-            }, 3000); // delay before starting the fade-out
-        }
-    });
-</script>
-
-<div id="messages-banner">
-    {% for message in messages %}
-        {{ message }}
-    {% endfor %}
-</div>
-{% endif %}
-
 <nav class="navbar-container">
-    <header>Manage Join Requests for Task: {{ task.task_name }}</header>
+    <header>Manage Join Requests and Collaborators for Task: {{ task.task_name }}</header>
     <a href="{% url 'org_project_list' org_id=org_id %}" class="outline-btn">Back to Projects</a>
 </nav>
+
+<!-- Pending Join Requests -->
+<h2>Pending Join Requests</h2>
 {% if pending_requests %}
     <ul>
         {% for request in pending_requests %}
             <li>
-                <div class="join-request-item">
-                    {{ request.user.get_full_name|default:request.user.username }} sent a request on {{ request.requested_at }}
-                    <form method="post" style="display:inline;">
-                        {% csrf_token %}
-                        <input type="hidden" name="request_id" value="{{ request.id }}">
-                        <div class="button-container">
-                            <button type="submit" name="action" value="approve" class="btn">Approve</button>
-                            <button type="submit" name="action" value="dismiss" class="btn">Dismiss</button>
-                        </div>
-                    </form>
-                </div>
+                {{ request.user.get_full_name|default:request.user.username }} sent a request on {{ request.requested_at }}
+                <form method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="request_id" value="{{ request.id }}">
+                    <button type="submit" name="action" value="approve" class="btn">Approve</button>
+                    <button type="submit" name="action" value="dismiss" class="btn">Dismiss</button>
+                </form>
             </li>
         {% endfor %}
     </ul>
 {% else %}
-    <div class="join-request-container">
-        <p>No pending join requests.</p>
-    </div>
+    <p>No pending join requests.</p>
 {% endif %}
+
+<!-- Edit Collaborators -->
+<h2>Edit Collaborators</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ collaborator_form.as_p }}
+    <button type="submit" name="edit_collaborators" class="btn">Save Collaborators</button>
+</form>
+
 {% endblock %}

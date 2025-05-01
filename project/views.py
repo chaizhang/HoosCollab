@@ -8,7 +8,7 @@ from django.http import Http404
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import TaskFileForm, ProjectForm, ProjectDeleteForm, CreateTaskForm, EditTaskForm, TaskMessageForm
+from .forms import TaskFileForm, ProjectForm, ProjectDeleteForm, CreateTaskForm, EditTaskForm, TaskMessageForm, ManageCollaboratorsForm
 from .models import TaskFile, Project, Task, Org, UserAssignedToTask, TaskMessage, TaskJoinRequest
 
 
@@ -459,6 +459,9 @@ def send_join_request(request, org_id, task_id):
     return redirect('join_request', org_id=org_id, task_id=task_id)
 
 
+'''
+manage join requests and edit task collaborators
+'''
 @login_required
 def manage_join_requests(request, org_id, task_id):
     task = get_object_or_404(Task, pk=task_id, project_id__org_id=org_id)
@@ -467,31 +470,87 @@ def manage_join_requests(request, org_id, task_id):
 
     if not (is_collaborator or is_owner):
         messages.error(request, "You are not authorized to manage this task's join requests.")
-        return redirect('manage_join_requests', org_id=org_id, task_id=task_id)
+        return redirect('org_project_list', org_id=org_id)
+
+    # initialize collaborator form
+    project_owner_id = task.project_id.user_id.id
+    collaborator_form = ManageCollaboratorsForm(
+        request.POST if 'edit_collaborators' in request.POST else None,
+        org_id=org_id,
+        project_owner_id=project_owner_id,
+        instance=task
+    )
 
     if request.method == 'POST':
-        action = request.POST.get('action')
-        request_id = request.POST.get('request_id')
-        join_request = get_object_or_404(TaskJoinRequest, pk=request_id, task=task)
+        if 'edit_collaborators' in request.POST and collaborator_form.is_valid():
+            # save updated collaborators
+            collaborator_form.save()
+            messages.success(request, "Collaborators updated successfully.")
+            return redirect('manage_join_requests', org_id=org_id, task_id=task_id)
 
-        user_display_name = join_request.user.get_full_name() or join_request.user.username
+        elif 'action' in request.POST:
+            action = request.POST.get('action')
+            request_id = request.POST.get('request_id')
+            join_request = get_object_or_404(TaskJoinRequest, pk=request_id, task=task)
 
-        if action == 'approve':
-            join_request.status = 'approved'
-            join_request.save()
-            UserAssignedToTask.objects.create(task_id=task, user_id=join_request.user)
-            messages.success(request, f"Join request from {user_display_name} approved.")
-        elif action == 'dismiss':
-            join_request.status = 'dismissed'
-            join_request.dismissed_at = timezone.now()
-            join_request.save()
-            messages.info(request, f"Join request from {user_display_name} dismissed.")
+            user_display_name = join_request.user.get_full_name() or join_request.user.username
 
-        return redirect('manage_join_requests', org_id=org_id, task_id=task_id)
+            if action == 'approve':
+                join_request.status = 'approved'
+                join_request.save()
+                UserAssignedToTask.objects.create(task_id=task, user_id=join_request.user)
+                messages.success(request, f"Join request from {user_display_name} approved.")
+            elif action == 'dismiss':
+                join_request.status = 'dismissed'
+                join_request.dismissed_at = timezone.now()
+                join_request.save()
+                messages.info(request, f"Join request from {user_display_name} dismissed.")
+
+            return redirect('manage_join_requests', org_id=org_id, task_id=task_id)
 
     pending_requests = TaskJoinRequest.objects.filter(task=task, status='pending')
+
     return render(request, 'project/manage_requests.html', {
         'task': task,
         'pending_requests': pending_requests,
+        'collaborator_form': collaborator_form,
         'org_id': org_id,
     })
+
+
+# @login_required
+# def manage_join_requests(request, org_id, task_id):
+#     task = get_object_or_404(Task, pk=task_id, project_id__org_id=org_id)
+#     is_collaborator = UserAssignedToTask.objects.filter(task_id=task, user_id=request.user).exists()
+#     is_owner = task.project_id.user_id == request.user
+
+#     if not (is_collaborator or is_owner):
+#         messages.error(request, "You are not authorized to manage this task's join requests.")
+#         return redirect('manage_join_requests', org_id=org_id, task_id=task_id)
+
+#     if request.method == 'POST':
+#         action = request.POST.get('action')
+#         request_id = request.POST.get('request_id')
+#         join_request = get_object_or_404(TaskJoinRequest, pk=request_id, task=task)
+
+#         user_display_name = join_request.user.get_full_name() or join_request.user.username
+
+#         if action == 'approve':
+#             join_request.status = 'approved'
+#             join_request.save()
+#             UserAssignedToTask.objects.create(task_id=task, user_id=join_request.user)
+#             messages.success(request, f"Join request from {user_display_name} approved.")
+#         elif action == 'dismiss':
+#             join_request.status = 'dismissed'
+#             join_request.dismissed_at = timezone.now()
+#             join_request.save()
+#             messages.info(request, f"Join request from {user_display_name} dismissed.")
+
+#         return redirect('manage_join_requests', org_id=org_id, task_id=task_id)
+
+#     pending_requests = TaskJoinRequest.objects.filter(task=task, status='pending')
+#     return render(request, 'project/manage_requests.html', {
+#         'task': task,
+#         'pending_requests': pending_requests,
+#         'org_id': org_id,
+#     })

@@ -5,6 +5,8 @@
     --blue-25: #C8CBD2;
     --orange-25: #F9DCBF;
     --border-color: #AFB1B6;
+    --card-color: #FAF3ED;
+    --project-background-color: #EFE8E3;
     --footer-container-height: 20px;
     font-size: 62.5%; /* approximately 16px */
 }
@@ -54,6 +56,8 @@ h4 {
 
 ul {
     padding: 5%;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
 }
 
 li {
@@ -363,17 +367,21 @@ form .checkbox-label {
 /* project section */
 .project-list {
     list-style-type: none;
-    padding: 0;
-    margin-top: 20px;
+    padding-top: 20px;
+    padding: 10px 20px 10px 20px;
+    /* margin-top: 20px; */
+    background-color: var(--project-background-color);
 }
 .project-item {
-    margin-bottom: 30px;
+    /* margin-bottom: 30px; */
+    padding-bottom: 30px;
 }
 .project-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 2.0rem 2.0rem 0.5rem 2.0rem;
+    padding: 2.0rem 2.0rem 0.5rem 2.0rem;
+    /* margin: 2.0rem 2.0rem 0.5rem 2.0rem; */
 }
 .project-header h2 {
     font-size: 2.2rem;
@@ -397,6 +405,7 @@ form .checkbox-label {
     padding: 20px;
     margin: 20px;
     box-shadow: 0 4px 8px lightgray;
+    background-color: white;
 }
 .task-item p {
     font-weight: 500;
@@ -424,10 +433,11 @@ form .checkbox-label {
 .task-collaborators {
     flex: 2;
     padding:20px;
-    background-color: #f9f9f9;
+    background-color: var(--card-color);
     border-radius: 5px;
-    border: 1.5px solid var(--border-color);
-    box-shadow: 0 4px 8px lightgray;
+    /* border: 1.5px solid var(--border-color); */
+    /* box-shadow: 0 4px 8px lightgray; */
+    background-color: var(--card-color);
 }
 .task-collaborators-header {
     display: flex;
@@ -442,19 +452,19 @@ form .checkbox-label {
 .task-status {
     flex: 1;
     padding:20px;
-    background-color: #f9f9f9;
+    background-color: var(--card-color);
     border-radius: 5px;
-    border: 1.5px solid var(--border-color);
-    box-shadow: 0 4px 8px lightgray;
+    /* border: 1.5px solid var(--border-color);
+    box-shadow: 0 4px 8px lightgray; */
 }
 .task-description,
 .task-files {
     flex: 1;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: var(--card-color);
     border-radius: 5px;
-    border: 1.5px solid var(--border-color);
-    box-shadow: 0 4px 8px lightgray;
+    /* border: 1.5px solid var(--border-color);
+    box-shadow: 0 4px 8px lightgray; */
 }
 .file-link {
     font-weight: 500;
@@ -468,10 +478,10 @@ form .checkbox-label {
 }
 .task-messages {
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: var(--card-color);
     border-radius: 5px;
-    border: 1.5px solid var(--border-color);
-    box-shadow: 0 4px 8px lightgray;
+    /* border: 1.5px solid var(--border-color);
+    box-shadow: 0 4px 8px lightgray; */
 }
 .task-messages h4 {
     display: inline;
@@ -531,8 +541,8 @@ form .checkbox-label {
 .task-status {
     padding: 20px;
     border-radius: 5px;
-    border: 1.5px solid var(--border-color);
-    box-shadow: 0 4px 8px lightgray;
+    /* border: 1.5px solid var(--border-color);
+    box-shadow: 0 4px 8px lightgray; */
 }
 /* status-specific background colors */
 .task-status-not-started {
