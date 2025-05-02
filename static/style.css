@@ -6,7 +6,9 @@
     --orange-25: #F9DCBF;
     --border-color: #AFB1B6;
     --card-color: #FAF3ED;
-    --project-background-color: #EFE8E3;
+    --pma-mode-card-color: #EEF0F5;
+    --background-color: #EFE8E3;
+    --pma-mode-background-color: #DDE0E8;
     --footer-container-height: 20px;
     font-size: 62.5%; /* approximately 16px */
 }
@@ -179,7 +181,7 @@ div {
     display: block;
     position: relative;
     max-width: 100%;
-    height: 35vh;
+    height: 30vh;
 }
 .profile-banner {
     width: auto;
@@ -202,22 +204,34 @@ div {
     left: 30px;
     width: 125px;
     height: 125px;
+    padding-left: 2rem;
 }
 .user-role-container {
     display: flex;
     gap: 1.4rem;
 }
 
+.profile-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
 .profile-container {
     display: flex;
     justify-content: space-between;
     padding-left: 30px;
+    padding-right: 30px;
+    border-bottom: 0.1rem solid;
+    border-bottom-color: var(--blue-25);
 }
 .profile-details-container {
     margin: 5px 0;
     font-size: 1.6rem;
     color: #333;
     align-items: baseline;
+    padding-left: 2rem;
 }
 .profile-label {
     font-weight: 500;
@@ -230,7 +244,8 @@ div {
 .profile-btn-container {
     display: flex;
     justify-content: flex-end;
-    margin-right: 30px;
+    /* margin-right: 30px; */
+    padding-right: 2rem;
     width: 30%;
     gap: 20px;
 }
@@ -255,15 +270,16 @@ div {
     flex-grow: 1; /* take up the remaining space */
     text-align: center;
     justify-content: center;
-    border: 2px solid lightgray;
+    /* border: 2px solid lightgray; */
     border-radius: 25px;
-    box-shadow: 0 4px 8px var(--blue-25);
+    box-shadow: 0 0 0.25rem var(--background-color);
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px; /* space between header and buttons */
-    margin: auto 20px 20px 20px;
+    margin: auto 4rem 4rem 4rem;
+    background-color: var(--card-color);
 }
 .dashboard-header {
     display: flex;
@@ -370,7 +386,10 @@ form .checkbox-label {
     padding-top: 20px;
     padding: 10px 20px 10px 20px;
     /* margin-top: 20px; */
-    background-color: var(--project-background-color);
+    background-color: var(--background-color);
+}
+.pma-admin-mode .project-list {
+    background-color: var(--pma-mode-background-color);
 }
 .project-item {
     /* margin-bottom: 30px; */
@@ -437,7 +456,9 @@ form .checkbox-label {
     border-radius: 5px;
     /* border: 1.5px solid var(--border-color); */
     /* box-shadow: 0 4px 8px lightgray; */
-    background-color: var(--card-color);
+}
+.pma-admin-mode .task-collaborators {
+    background-color: var(--pma-mode-card-color);
 }
 .task-collaborators-header {
     display: flex;
@@ -457,6 +478,10 @@ form .checkbox-label {
     /* border: 1.5px solid var(--border-color);
     box-shadow: 0 4px 8px lightgray; */
 }
+.pma-admin-mode .task-due-date,
+.pma-admin-mode .task-status {
+    background-color: var(--pma-mode-card-color);
+}
 .task-description,
 .task-files {
     flex: 1;
@@ -465,6 +490,10 @@ form .checkbox-label {
     border-radius: 5px;
     /* border: 1.5px solid var(--border-color);
     box-shadow: 0 4px 8px lightgray; */
+}
+.pma-admin-mode .task-description,
+.pma-admin-mode .task-files {
+    background-color: var(--pma-mode-card-color);
 }
 .file-link {
     font-weight: 500;
@@ -482,6 +511,9 @@ form .checkbox-label {
     border-radius: 5px;
     /* border: 1.5px solid var(--border-color);
     box-shadow: 0 4px 8px lightgray; */
+}
+.pma-admin-mode .task-messages {
+    background-color: var(--pma-mode-card-color);
 }
 .task-messages h4 {
     display: inline;
