@@ -4,7 +4,7 @@
 <div class="file-header">
     <header>File: {{ taskfile.title }}</header>
     <div class="header-right">
-        <a href="{% url 'org_project_list' org_id=org_id %}" class="btn">Return to Projects</a>
+        <a href="{% url 'org_project_list' org_id=org_id %}" class="outline-btn">Back to Projects</a>
     </div>
 </div>
 <div class="file-details">
@@ -19,7 +19,10 @@
     {% elif file_extension == "pdf" %}
         <iframe src="{{ file_url }}" class="file-iframe"></iframe>
     {% else %}
-        <a href="{{ file_url }}" target="_blank">Download File</a>
+        <div class="button-container">
+            <a href="{{ file_url }}" target="_blank" class="btn">Download File</a>
+            <a href="{% url 'org_project_list' org_id=org_id %}" class="outline-btn">Back to Projects</a>
+        </div>
     {% endif %}
 </div>
 {% endblock %}
