@@ -1,20 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
+    {% if messages %}
+    <ul class="messages">
+    {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+
+
     <div class="custom-form-container">
         <header>Manage Organizations</header>
 
         {% if not is_pma_admin %}
 
-        <!-- <div class="form-section">
-            <h2 class="section-title">Add New Organization</h2>
-            <form method="POST">
-                {% csrf_token %}
-                {{ add_org_form.as_p }}
-                <div class="button-container">
-                    <button class="btn" type="submit" name="add_org">Add Organization</button>
-                </div>
-            </form>
-        </div> -->
         <div class="form-section">
             <h2 class="section-title">Join an Organization</h2>
             <form method="POST">
@@ -25,6 +24,18 @@
                 </div>
             </form>
         </div>
+
+        <div class="form-section">
+            <h2 class="section-title">Create a New Organization</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <label for="new_organization">Organization Name:</label>
+                <input type="text" id="new_organization" name="new_organization" required>
+                <div class="button-container">
+                    <button class="btn" type="submit" name="create_org">Create Organization</button>
+                </div>
+            </form>
+        </div>        
         
         {% endif %}
 

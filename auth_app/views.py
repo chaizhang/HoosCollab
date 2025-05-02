@@ -108,6 +108,18 @@ def manage_organizations(request):
                 UserInOrg.objects.create(user_id=request.user, org_id=org)
                 messages.success(request, f"You have successfully joined {org.org_name}.")
                 return redirect('user')
+            
+        # creating a new organization
+        elif 'create_org' in request.POST:
+            new_org_name = request.POST.get('new_organization', '').strip()
+            if new_org_name:
+                if Org.objects.filter(org_name__iexact=new_org_name).exists():
+                    messages.warning(request, "This organization already exists.")
+                else:
+                    new_org = Org.objects.create(org_name=new_org_name)
+                    UserInOrg.objects.create(user_id=request.user, org_id=new_org)
+                    messages.success(request, f"Organization '{new_org_name}' created and you have been added to it.")
+                return redirect('user')
 
         # removing organizations
         elif 'remove_org' in request.POST:
