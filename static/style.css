@@ -281,6 +281,9 @@ div {
     margin: auto 4rem 4rem 4rem;
     background-color: var(--card-color);
 }
+.pma-admin-mode .dashboard-container {
+    background-color: var(--pma-mode-card-color);
+}
 .dashboard-header {
     display: flex;
     text-align: center;
@@ -298,7 +301,7 @@ div {
 .custom-form-container {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 2.5rem;
     margin: 0 auto;
     padding: 2.0rem 2.0rem 2.0rem 2.0rem;
 }
@@ -326,6 +329,17 @@ div {
     font-size: 2.8rem;
     margin-bottom: 15px;
     color: var(--lighter-blue);
+}
+
+/* form background */
+.form-background-rect {
+    background-color: var(--card-color);
+    padding: 20px;
+    border-radius: 16px;
+    /* margin-top: 20px; */
+}
+.pma-admin-mode .form-background-rect {
+    background-color: var(--pma-mode-card-color);
 }
 
 /* form buttons */
