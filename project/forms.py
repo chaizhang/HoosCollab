@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.widgets import ClearableFileInput
 from django.contrib.auth.models import User
 from .models import Project, TaskFile, Task, Org, UserAssignedToTask, TaskMessage
 
@@ -35,6 +36,12 @@ class TaskFileForm(forms.ModelForm):
     class Meta:
         model = TaskFile
         fields = ['title', 'file', 'file_description', 'keywords']
+        widgets = {
+            'file': ClearableFileInput(attrs={
+                'class': 'custom-file-input',
+                'id': 'id_file'
+            }),
+        }
 
     def clean(self):
         cleaned_data = super().clean()
