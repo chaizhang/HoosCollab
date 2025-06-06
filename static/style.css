@@ -4,8 +4,8 @@
     --orange: #E57200;
     --blue-25: #C8CBD2;
     --orange-25: #F9DCBF;
-    --border-color: #AFB1B6;
-    --card-color: #FAF3ED;
+    --border-color: rgba(0, 0, 0, 0.25);
+    --card-color: #F1F1F1;
     --pma-mode-card-color: #EEF0F5;
     --background-color: #EFE8E3;
     --pma-mode-background-color: #DDE0E8;
@@ -35,8 +35,8 @@ header {
     color: var(--blue);
     line-height: 1.6;
     display: flex;
-    padding-left: 2rem;
-    padding-top: 2rem;
+    /* padding-left: 2rem; */
+    /* padding-top: 2rem; */
 }
 
 h1 {
@@ -46,7 +46,7 @@ h1 {
 }
 
 h2 {
-    font-weight: 400; /* regular */
+    font-weight: 500; /* medium */
     font-size: 2.8rem;  
     margin: 0;
 }
@@ -79,7 +79,7 @@ li {
 
 p {
     font-weight: 400;  /* regular */
-    font-size: 2.0rem;
+    font-size: 1.8rem;
     margin: 0;
     line-height: 1.6;
 }
@@ -110,8 +110,8 @@ div {
     justify-content: space-between;
     margin-left: 3rem;
     margin-right: 3rem;
-    padding-top: 18px;
-    padding-bottom: 20px;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
     align-items: center;
 }
 .navbar-btn-container {
@@ -934,6 +934,23 @@ form .checkbox-label {
 }
 
 /* PUBLIC ORG PROJECT LIST PAGE */
+.public-org-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-left: 3rem;
+    margin-right: 3rem;
+}
+
+.public-org-project-container {
+    padding: 2rem;
+    /* border: solid 1.5px rgba(0, 0, 0, 0.25); */
+    border-radius: 2rem;
+    background-color: var(--card-color);
+    box-shadow: 2px 4px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* list of projects under a certain org */
 .public-project-list p {
     margin-top: 1.0rem;
 }
