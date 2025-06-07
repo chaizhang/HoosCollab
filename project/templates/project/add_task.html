@@ -35,7 +35,6 @@
     </nav>
 
     <div class="custom-form-container">
-        <div class="form-background-rect">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <h2>Task Details</h2>
@@ -66,10 +65,13 @@
     
                 <!-- custom file input -->
                 <div class="form-field file-input-wrapper">
-                    <label for="file" class="custom-file-input">
+                    <!-- <label for="file" class="custom-file-input">
                         Choose File
                         <input id="file" type="file" name="file">
                     </label>
+                    <span id="file-chosen-text" class="file-chosen-text">No file chosen</span> -->
+                    <label for="file">Choose File</label>
+                    <input id="file" type="file" name="file" class="custom-file-input">
                     <span id="file-chosen-text" class="file-chosen-text">No file chosen</span>
                 </div>
     
@@ -92,7 +94,6 @@
                     <a href="{% url 'org_project_list' org_id=org.pk %}" class="outline-btn">Cancel</a>
                 </div>
             </form>
-        </div>
     </div>
 
     <script>

@@ -54,20 +54,6 @@
                         </form>
                     </div>
                 </div>
-                <!-- <header class="user-name">
-                    {{ first_name }} {{ last_name }}
-                    {% if pronoun %}
-                        <span class="pronoun">({{ pronoun }})</span>
-                    {% endif %}
-                </header>
-
-                <div class="profile-btn-container">
-                    <a href="{% url 'profile' %}" class="btn">Update Profile</a>
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button class="outline-btn" type="submit">Log Out</button>
-                    </form>
-                </div> -->
                 
                 <div class="profile-detail-item">
                     <div class="profile-detail-icon-text">
@@ -111,27 +97,53 @@
                     {% if can_be_pma_admin %}
                     <form method="post" action="{% url 'switch_role' %}">
                         {% csrf_token %}
-                        <button class="outline-btn-sm" style="margin-bottom: 1.2rem;">Switch Role</button>
+                        <button class="outline-btn-sm" style="margin-bottom: 1.5rem;">Switch Role</button>
                     </form>
                     {% endif %}
                 </div>
             </div>
 
-            <!-- <div class="profile-btn-container">
-                <a href="{% url 'profile' %}" class="btn">Update Profile</a>
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button class="outline-btn" type="submit">Log Out</button>
-                </form>
-            </div> -->
         </div>
         <div class="profile-main-container">
             <div class="dashboard-container">
                 <h2 class="dashboard-header">Active Organizations {% if not is_pma_admin %}<a href="{% url 'manage_organizations' %}" class="outline-btn-sm">Edit</a>{% endif %}</h2>
                 {% if org_details %}
-                <div class="button-grid">
+                <!-- <div class="button-grid">
                     {% for org in org_details %}
                         <a href="{% url 'org_project_list' org.org_id %}" class="btn">{{ org.org_name }}</a>
+                    {% endfor %}
+                </div> -->
+                <div class="button-grid">
+                    {% for org in org_details %}
+                    <a href="{% url 'org_project_list' org.org_id %}" class="org-container-link">
+                        <div class="org-container">
+                            <div class="org-task-container">
+                                <div class="dashboard-org-name">{{ org.org_name }}</div>
+                                <div class="org-task-list">
+                                    <div class="org-task-item">
+                                        <span class="status-dot status-dot-not-started" style="width: 1.6rem; height: 1.6rem;"></span> Not Started: {{ org.task_counts.not_started }}
+                                    </div>
+                                    <div class="org-task-item">
+                                        <span class="status-dot status-dot-in-progress" style="width: 1.6rem; height: 1.6rem;"></span> In Progress: {{ org.task_counts.in_progress }}
+                                    </div>
+                                    <div class="org-task-item">
+                                        <span class="status-dot status-dot-stuck" style="width: 1.6rem; height: 1.6rem;"></span> Stuck: {{ org.task_counts.stuck}}
+                                    </div>
+                                    <div class="org-task-item">
+                                        <span class="status-dot status-dot-awaiting-review" style="width: 1.6rem; height: 1.6rem;"></span> Review: {{ org.task_counts.awaiting_review }}
+                                    </div>
+                                    <div class="org-task-item">
+                                        <span class="status-dot status-dot-completed" style="width: 1.6rem; height: 1.6rem;"></span> Done: {{ org.task_counts.completed }}
+                                    </div>
+                                </div>
+                                </div>
+
+                                <div class="task-count-container">
+                                    <p>{{ org.task_counts.total|default:0 }}</p>
+                                    <p style="color: gray; font-size: 1.6rem">Tasks</p>
+                                </div>
+                            </div>
+                        </a>
                     {% endfor %}
                 </div>
                 {% else %}

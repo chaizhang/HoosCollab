@@ -1,11 +1,49 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.sessions.models import Session
-from project.models import Org, UserInOrg
+from project.models import Org, UserInOrg, Task, Project
 from auth_app.models import Profile
 from .forms import ProfileForm, JoinOrgForm, RemoveOrgForm, UserForm
 from django.urls import reverse
 from django.contrib import messages
+from django.db.models import Count, Q
+
+
+# @login_required
+# def index(request):
+#     user_profile = Profile.objects.get(user=request.user)
+#     can_be_pma_admin = request.user.groups.filter(name="PMA Admin").exists()
+#     is_pma_admin = request.session.get('is_pma_admin', False)
+
+#     if request.session.get('is_pma_admin', False):
+#         # PMA Admins see all organizations
+#         user_orgs = Org.objects.all()
+#         org_details = [{'org_name': org.org_name, 'org_id': org.org_id, 'task_counts': org_task_status_counts.get(org.org_id, {})} for org in user_orgs]
+#     else:
+#         # common users see their associated organizations
+#         user_orgs = UserInOrg.objects.filter(user_id=request.user).select_related('org_id')
+#         org_details = [{
+#             'org_name': user_org.org_id.org_name, 
+#             'org_id': user_org.org_id.org_id,
+#             } for user_org in user_orgs]
+
+#     first_name = request.user.first_name if request.user.first_name else request.user.username
+#     last_name = request.user.last_name if request.user.last_name else ""
+
+#     context = {
+#         'user': request.user,
+#         'user_info': user_profile,
+#         'org_details': org_details,
+#         'computing_id': user_profile.computing_id if user_profile.computing_id else "NULL",
+#         'pronoun': user_profile.pronoun if user_profile.pronoun else None,
+#         'first_name': first_name,
+#         'last_name': last_name,
+#         'is_pma_admin': is_pma_admin,
+#         'can_be_pma_admin': can_be_pma_admin,
+#         'current_role': "PMA Admin" if request.session.get('is_pma_admin') else "Common User",
+#     }
+
+#     return render(request, 'auth_app/index.html', context)
 
 
 @login_required
@@ -14,29 +52,47 @@ def index(request):
     can_be_pma_admin = request.user.groups.filter(name="PMA Admin").exists()
     is_pma_admin = request.session.get('is_pma_admin', False)
 
-    if request.session.get('is_pma_admin', False):
-        # PMA Admins see all organizations
-        user_orgs = Org.objects.all()
-        org_details = [{'org_name': org.org_name, 'org_id': org.org_id} for org in user_orgs]
+    # Get list of relevant orgs
+    if is_pma_admin:
+        orgs = list(Org.objects.all())
     else:
-        # common users see their associated organizations
-        user_orgs = UserInOrg.objects.filter(user_id=request.user).select_related('org_id')
-        org_details = [{'org_name': user_org.org_id.org_name, 'org_id': user_org.org_id.org_id} for user_org in user_orgs]
+        orgs = [user_org.org_id for user_org in UserInOrg.objects.filter(user_id=request.user).select_related('org_id')]
 
-    first_name = request.user.first_name if request.user.first_name else request.user.username
-    last_name = request.user.last_name if request.user.last_name else ""
+    # Build task status counts per org
+    org_task_status_counts = {}
+    for org in orgs:
+        counts = Task.objects.filter(project_id__org_id=org.org_id).aggregate(
+            not_started=Count('task_id', filter=Q(task_status='not started')),
+            in_progress=Count('task_id', filter=Q(task_status='in progress')),
+            stuck=Count('task_id', filter=Q(task_status='stuck')),
+            awaiting_review=Count('task_id', filter=Q(task_status='awaiting review')),
+            completed=Count('task_id', filter=Q(task_status='completed')),
+            total=Count('task_id'),
+        )
+        org_task_status_counts[org.org_id] = counts
+
+    # Build final context list
+    org_details = [{
+        'org_name': org.org_name,
+        'org_id': org.org_id,
+        'task_counts': org_task_status_counts.get(org.org_id, {})
+    } for org in orgs]
+
+    # User name
+    first_name = request.user.first_name or request.user.username
+    last_name = request.user.last_name or ""
 
     context = {
         'user': request.user,
         'user_info': user_profile,
         'org_details': org_details,
-        'computing_id': user_profile.computing_id if user_profile.computing_id else "NULL",
-        'pronoun': user_profile.pronoun if user_profile.pronoun else None,
+        'computing_id': user_profile.computing_id or "NULL",
+        'pronoun': user_profile.pronoun or None,
         'first_name': first_name,
         'last_name': last_name,
         'is_pma_admin': is_pma_admin,
         'can_be_pma_admin': can_be_pma_admin,
-        'current_role': "PMA Admin" if request.session.get('is_pma_admin') else "Common User",
+        'current_role': "PMA Admin" if is_pma_admin else "Common User",
     }
 
     return render(request, 'auth_app/index.html', context)
