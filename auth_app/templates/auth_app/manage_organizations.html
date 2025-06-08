@@ -8,14 +8,17 @@
     </ul>
     {% endif %}
 
-    <div class="custom-form-container">
+    <div class="header-container">
         <header>Manage Organizations</header>
+    </div>
+
+    <div class="custom-form-container">
 
         {% if not is_pma_admin %}
 
         <div class="form-background-rect">
             <div class="form-section">
-                <h2 class="section-title">Join an Organization</h2>
+                <h2 class="section-title" style="padding-top: 0;">Join an Organization</h2>
                 <form method="POST">
                     {% csrf_token %}
                     {{ join_org_form.as_p }}
