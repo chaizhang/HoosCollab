@@ -178,7 +178,6 @@ div {
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    height: var(--footer-container-height); 
 }
 .footer-text {
     font-size: 16px;
@@ -389,7 +388,7 @@ div {
     display: flex;
     flex-direction: column;
     gap: 2.5rem;
-    margin: 3rem 3rem 0 3rem;
+    margin: 0 3rem 0 3rem;
     /* padding: 2.0rem 2.0rem 2.0rem 2.0rem; */
 }
 .section-title {
@@ -1194,16 +1193,7 @@ form .checkbox-label {
 }
 /* custom file input styling */
 .custom-file-input {
-    /* display: inline-block;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    padding: 0.5rem 1rem;
-    border: 1.5px solid var(--orange);
-    border-radius: 8px;
-    background-color: var(--orange);
-    color: white;
-    font-size: 1.6rem; */
+    font-family: "Work Sans", sans-serif;
     padding-bottom: 2rem;
 }
 
@@ -1230,10 +1220,6 @@ form .checkbox-label {
 .uploaded-files .file-link:hover {
     color: var(--orange);
 }
-
-/* p:has(.custom-file-input) {
-    padding-bottom: 1rem; /* Adds space below the input group */
-/* } */
 
 /* MANAGE JOIN REQUEST PAGE */
 .join-request-item {
