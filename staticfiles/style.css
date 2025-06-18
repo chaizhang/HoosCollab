@@ -641,10 +641,6 @@ form .checkbox-label {
     border: 1px solid lightgray;
     display: block; /* ensure it centers as a block */
 }
-.return-button-container {
-    text-align: center;
-    margin: 30px 0;
-}
 
 /* JOIN REQUEST PAGE */
 .join-request-container {

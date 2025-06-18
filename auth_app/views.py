@@ -170,7 +170,7 @@ def manage_organizations(request):
             new_org_name = request.POST.get('new_organization', '').strip()
             if new_org_name:
                 if Org.objects.filter(org_name__iexact=new_org_name).exists():
-                    messages.warning(request, "This organization already exists.")
+                    messages.warning(request, "This organization already exists!")
                 else:
                     new_org = Org.objects.create(org_name=new_org_name)
                     UserInOrg.objects.create(user_id=request.user, org_id=new_org)

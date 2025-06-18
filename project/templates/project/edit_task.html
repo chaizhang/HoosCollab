@@ -16,13 +16,15 @@
             {{ form.as_p }}
 
             <p style="font-size: 1.6rem;"><em>Project Creator: {{ task.project_id.user_id.get_full_name|default:task.project_id.user_id.username }}</em></p>
-            <p style="font-size: 1.6rem;">Remove yourself from the collaborator list to leave the task. You will lose edit and file access to this task.</p>
+            <p style="font-size: 1.6rem; padding-top: 0.5rem;">Remove yourself from the collaborator list to leave the task. You will lose edit and file access to this task.</p>
 
             <div class="button-container">
                 <button type="submit" name="edit_task" class="btn">Save Changes</button>
                 <a href="{% url 'org_project_list' org_id=org.pk %}" class="outline-btn">Cancel</a>
             </div>
         </form>
+
+        <hr>
 
         <!-- Upload File Form -->
         <form method="post" enctype="multipart/form-data">
@@ -36,6 +38,8 @@
         </form>
         {% endif %}
 
+        <hr>
+
         <!-- Uploaded Files Section -->
         <h2 class="section-title">Uploaded Files</h2>
         <ul>
@@ -46,13 +50,17 @@
                         {% if is_pma_admin or is_project_owner or file.uploaded_by == request.user %}
                             <form method="post" style="display:inline;">
                                 {% csrf_token %}
-                                <button type="submit" name="delete_file" value="{{ file.id }}" class="btn">Delete</button>
+                                <button type="submit" name="delete_file" value="{{ file.id }}" class="btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 -960 960 960">
+                                        <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120zm400-600H280v520h400zM360-280h80v-360h-80zm160 0h80v-360h-80zM280-720v520z"/>
+                                    </svg>
+                                </button>
                             </form>
                         {% endif %}
                     </div>
                 </li>
             {% empty %}
-                <li>No files have been uploaded yet.</li>
+                <div>No files have been uploaded yet.</div>
             {% endfor %}
         </ul>
     </div>

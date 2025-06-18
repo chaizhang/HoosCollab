@@ -1,17 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="file-header">
+<div class="navbar-container">
     <header>File: {{ taskfile.title }}</header>
-    <div class="header-right">
-        <a href="{% url 'org_project_list' org_id=org_id %}" class="outline-btn">Back to Projects</a>
+    <a href="{% url 'org_project_list' org_id=org_id %}" class="outline-btn">Back to Projects</a>
+</div>
+
+<div class="custom-form-container">
+    <div class="form-background-rect">
+        <p style="font-weight: 500;">Description:</p>
+        <p>{{ taskfile.file_description }}</p>
+        <!-- <p>Keywords: {{ taskfile.keywords }}</p> -->
+        <br>
+        <p style="font-weight: 500;">Uploaded on:</p>
+        <p>{{ taskfile.timestamp }}</p>
     </div>
 </div>
-<div class="file-details">
-    <p>Description: {{ taskfile.file_description }}</p>
-    <p>Keywords: {{ taskfile.keywords }}</p>
-    <p>Uploaded at: {{ taskfile.timestamp }}</p>
-</div>
+
+<h2 class="file-name">View File</h2>
 
 <div class="file-display">
     {% if file_extension == "jpg" or file_extension == "jpeg" %}
@@ -19,9 +25,9 @@
     {% elif file_extension == "pdf" %}
         <iframe src="{{ file_url }}" class="file-iframe"></iframe>
     {% else %}
-        <div class="button-container">
-            <a href="{{ file_url }}" target="_blank" class="btn">Download File</a>
-            <a href="{% url 'org_project_list' org_id=org_id %}" class="outline-btn">Back to Projects</a>
+    <p style="margin-top: 3rem; margin-bottom: 3rem;"><em>Clicking the button below will open the text file in another tab.</em></p>
+        <div class="view-file-button-container">
+            <a href="{{ file_url }}" target="_blank" class="btn">View Uploaded Text File</a>
         </div>
     {% endif %}
 </div>

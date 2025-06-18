@@ -36,36 +36,40 @@
             <div class="profile-banner"></div>
             <img src="{% static 'profile_photo_placeholder.png' %}" class="profile-photo">
         </div>
-        <div class="profile-container">
-            <div class="profile-details-container">
-                <div class="profile-name-and-buttons-container">
-                    <header class="user-name">
-                        {{ first_name }} {{ last_name }}
-                        {% if pronoun %}
-                            <span class="pronoun">&nbsp;({{ pronoun }})</span>
-                        {% endif %}
-                    </header>
+
+        <div class="new-profile-container">
+            <div class="name">
+                <header class="user-name">
+                    {{ first_name }} {{ last_name }}
+                </header>
+            </div>
     
-                    <div class="profile-btn-container">
-                        <a href="{% url 'profile' %}" class="btn">Update Profile</a>
-                        <form method="post" action="{% url 'logout' %}">
-                            {% csrf_token %}
-                            <button class="outline-btn" type="submit">Log Out</button>
-                        </form>
-                    </div>
+            <div class="buttons">
+                <div class="profile-buttons-container">
+                    <a href="{% url 'profile' %}" class="btn">Edit Profile</a>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="outline-btn" type="submit">Log Out</button>
+                    </form>
                 </div>
+            </div>
                 
-                <div class="profile-detail-item">
-                    <div class="profile-detail-icon-text">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" fill="gray" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>
+            <div class="details">
+                <div class="profile-details-container">
+                    <div class="icon-n-text-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" fill="gray" viewBox="0 0 512 512">
+                            <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                            <path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>
                         <p><span class="profile-label">Email</span></p>
                     </div>
                     <p>{{ user.email }}</p>
                 </div>
 
-                <div class="profile-detail-item">
-                    <div class="profile-detail-icon-text">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" fill="gray" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M181.3 32.4c17.4 2.9 29.2 19.4 26.3 36.8L197.8 128l95.1 0 11.5-69.3c2.9-17.4 19.4-29.2 36.8-26.3s29.2 19.4 26.3 36.8L357.8 128l58.2 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-68.9 0L325.8 320l58.2 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-68.9 0-11.5 69.3c-2.9 17.4-19.4 29.2-36.8 26.3s-29.2-19.4-26.3-36.8l9.8-58.7-95.1 0-11.5 69.3c-2.9 17.4-19.4 29.2-36.8 26.3s-29.2-19.4-26.3-36.8L90.2 384 32 384c-17.7 0-32-14.3-32-32s14.3-32 32-32l68.9 0 21.3-128L64 192c-17.7 0-32-14.3-32-32s14.3-32 32-32l68.9 0 11.5-69.3c2.9-17.4 19.4-29.2 36.8-26.3zM187.1 192L165.8 320l95.1 0 21.3-128-95.1 0z"/></svg>
+                <div class="profile-details-container">
+                    <div class="icon-n-text-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" fill="gray" viewBox="0 0 512 512">
+                            <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                            <path d="M181.3 32.4c17.4 2.9 29.2 19.4 26.3 36.8L197.8 128l95.1 0 11.5-69.3c2.9-17.4 19.4-29.2 36.8-26.3s29.2 19.4 26.3 36.8L357.8 128l58.2 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-68.9 0L325.8 320l58.2 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-68.9 0-11.5 69.3c-2.9 17.4-19.4 29.2-36.8 26.3s-29.2-19.4-26.3-36.8l9.8-58.7-95.1 0-11.5 69.3c-2.9 17.4-19.4 29.2-36.8 26.3s-29.2-19.4-26.3-36.8L90.2 384 32 384c-17.7 0-32-14.3-32-32s14.3-32 32-32l68.9 0 21.3-128L64 192c-17.7 0-32-14.3-32-32s14.3-32 32-32l68.9 0 11.5-69.3c2.9-17.4 19.4-29.2 36.8-26.3zM187.1 192L165.8 320l95.1 0 21.3-128-95.1 0z"/></svg>
                         <p><span class="profile-label">Computing ID</span></p>
                     </div>
                         <p>
@@ -77,42 +81,41 @@
                         </p>
                 </div>
 
-                <div class="profile-detail-item">
-                    <div class="profile-detail-icon-text">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" fill="gray" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L64 64C28.7 64 0 92.7 0 128l0 16 0 48L0 448c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-256 0-48 0-16c0-35.3-28.7-64-64-64l-40 0 0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L152 64l0-40zM48 192l352 0 0 256c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16l0-256z"/></svg>
+                <div class="profile-details-container">
+                    <div class="icon-n-text-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" fill="gray" viewBox="0 0 448 512">
+                            <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                            <path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L64 64C28.7 64 0 92.7 0 128l0 16 0 48L0 448c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-256 0-48 0-16c0-35.3-28.7-64-64-64l-40 0 0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L152 64l0-40zM48 192l352 0 0 256c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16l0-256z"/></svg>
                         <p><span class="profile-label">Date Joined</span></p>
                     </div>
                     <p>{{ user.date_joined|date:"F j, Y" }}</p>
                 </div>
 
-                <div class="profile-detail-item">
-                    <div class="profile-detail-icon-text">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" fill="gray" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/></svg>
+                <div class="profile-details-container">
+                    <div class="icon-n-text-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" fill="gray" viewBox="0 0 448 512">
+                            <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                            <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/></svg>
                         <p><span class="profile-label">User Role</span></p>
                     </div>
                         <p>{{ current_role }}</p>
                 </div>
 
-                <div class="profile-detail-item">
+                <div class="profile-details-container">
                     {% if can_be_pma_admin %}
                     <form method="post" action="{% url 'switch_role' %}">
                         {% csrf_token %}
-                        <button class="outline-btn-sm" style="margin-bottom: 1.5rem;">Switch Role</button>
+                        <button class="outline-btn-sm" style="margin-bottom: 2.5rem;">Switch Role</button>
                     </form>
                     {% endif %}
                 </div>
             </div>
-
         </div>
+
         <div class="profile-main-container">
             <div class="dashboard-container">
                 <h2 class="dashboard-header">Active Organizations {% if not is_pma_admin %}<a href="{% url 'manage_organizations' %}" class="outline-btn-sm">Edit</a>{% endif %}</h2>
                 {% if org_details %}
-                <!-- <div class="button-grid">
-                    {% for org in org_details %}
-                        <a href="{% url 'org_project_list' org.org_id %}" class="btn">{{ org.org_name }}</a>
-                    {% endfor %}
-                </div> -->
                 <div class="button-grid">
                     {% for org in org_details %}
                     <a href="{% url 'org_project_list' org.org_id %}" class="org-container-link">
