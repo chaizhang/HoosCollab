@@ -8,8 +8,8 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     computing_id = models.CharField(max_length=10, unique=True, blank=True, null=True)
     preferred_name = models.CharField(max_length=255, blank=True, null=True)
-    pronoun = models.CharField(max_length=50, blank=True, null=True)
-    # profile_photo (add later)
+    # pronoun = models.CharField(max_length=50, blank=True, null=True)
+    # profile_photo
 
     def __str__(self):
         return self.user.username
