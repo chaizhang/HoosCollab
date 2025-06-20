@@ -22,13 +22,15 @@ load_dotenv(override=True)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-z=a-u)coro-#+8+g-pe!5dm2rw0#c$ue51d6&nimhvi6i$ivqo"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
+# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
-# SET UP SUPABASE DATABASE CONNECTION URL
+
+# DATABASE CONFIG
 DATABASES = {
     'default': dj_database_url.config(
         default=os.environ.get("DATABASE_URL"),
@@ -37,7 +39,15 @@ DATABASES = {
     )
 }
 
-# STATIC FILES (CSS, JavaScript, Images)
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+
+# STATIC FILES CONFIG (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [ BASE_DIR / "static" ]  # for custom static files during dev
@@ -45,12 +55,6 @@ STATIC_ROOT = BASE_DIR / "staticfiles"      # for production, used by collectsta
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-### DATABASES = {
-###     'default': {
-###         'ENGINE': 'django.db.backends.sqlite3',
-###         'NAME': BASE_DIR / 'db.sqlite3',
-###     }
-### }
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 604800  # 1 week
@@ -60,11 +64,6 @@ SESSION_SAVE_EVERY_REQUEST = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: don't run with debug turned on in production!
-### DEBUG = True
-
-### ALLOWED_HOSTS = ["cio-project-management-d0136f33746b.herokuapp.com", "127.0.0.1", "localhost"]
 
 
 # AWS S3 Configuration
@@ -176,6 +175,7 @@ CSP_SCRIPT_SRC = ("'self'", 'https://code.jquery.com', 'https://cdn.jsdelivr.net
 
 ROOT_URLCONF = "cio_project_management.urls"
 
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -193,10 +193,13 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = "cio_project_management.wsgi.application"
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
