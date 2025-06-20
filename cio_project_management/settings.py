@@ -10,35 +10,47 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-import django_heroku
 from dotenv import load_dotenv
 import os
+import dj_database_url
 from pathlib import Path
-# import dj_database_url
 
-load_dotenv()
+
+load_dotenv(override=True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# if 'DATABASE_URL' in os.environ:
-#     DATABASES = {
-#         'default': dj_database_url.config(conn_max_age=600, ssl_require=True),
-#     }
-# else:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': BASE_DIR / 'db.sqlite3',
-#         }
-#     }
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = "django-insecure-z=a-u)coro-#+8+g-pe!5dm2rw0#c$ue51d6&nimhvi6i$ivqo"
 
+DEBUG = os.environ.get("DEBUG", "True") == "True"
+
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+
+# SET UP SUPABASE DATABASE CONNECTION URL
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
+
+# STATIC FILES (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/4.2/howto/static-files/
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [ BASE_DIR / "static" ]  # for custom static files during dev
+STATIC_ROOT = BASE_DIR / "staticfiles"      # for production, used by collectstatic
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+### DATABASES = {
+###     'default': {
+###         'ENGINE': 'django.db.backends.sqlite3',
+###         'NAME': BASE_DIR / 'db.sqlite3',
+###     }
+### }
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 604800  # 1 week
@@ -49,13 +61,10 @@ SESSION_SAVE_EVERY_REQUEST = True
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-z=a-u)coro-#+8+g-pe!5dm2rw0#c$ue51d6&nimhvi6i$ivqo"
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+### DEBUG = True
 
-ALLOWED_HOSTS = ["cio-project-management-d0136f33746b.herokuapp.com", "127.0.0.1", "localhost"]
+### ALLOWED_HOSTS = ["cio-project-management-d0136f33746b.herokuapp.com", "127.0.0.1", "localhost"]
 
 
 # AWS S3 Configuration
@@ -217,21 +226,10 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATIC_URL = "/static/"
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
 # Enable WhiteNoise compression and caching
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+### STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-ON_HEROKU = os.getenv('ON_HEROKU', False)
-if ON_HEROKU:
-    django_heroku.settings(locals())

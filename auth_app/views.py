@@ -87,7 +87,6 @@ def index(request):
         'user_info': user_profile,
         'org_details': org_details,
         'computing_id': user_profile.computing_id or "NULL",
-        'pronoun': user_profile.pronoun or None,
         'first_name': first_name,
         'last_name': last_name,
         'is_pma_admin': is_pma_admin,
