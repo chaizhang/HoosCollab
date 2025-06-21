@@ -31,13 +31,36 @@ ALLOWED_HOSTS = ['hooscollab.onrender.com', '127.0.0.1' , 'localhost']
 
 
 # DATABASE CONFIG
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=os.environ.get("DATABASE_URL"),
+#         conn_max_age=600,
+#         ssl_require=True
+#     )
+# }
+
+import socket
+
+# helper: detect if we're running on localhost
+IS_LOCAL = socket.gethostbyname(socket.gethostname()).startswith("127.")
+
+if IS_LOCAL:
+    # use SQLite for local development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    # use Supabase/PostgreSQL for production
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get("DATABASE_URL"),
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
 
 # DATABASES = {
 #     'default': {
