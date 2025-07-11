@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 import os
 import dj_database_url
 from pathlib import Path
+import socket
 
 
 load_dotenv(override=True)
@@ -27,47 +28,39 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ['hooscollab.onrender.com', '127.0.0.1' , 'localhost']
+ALLOWED_HOSTS = ['hooscollab.onrender.com', '127.0.0.1' , 'localhost', '192.168.1.33']
 
 
 # DATABASE CONFIG
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default=os.environ.get("DATABASE_URL"),
-#         conn_max_age=600,
-#         ssl_require=True
-#     )
-# }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=True
+    )
+}
 
-import socket
 
 # helper: detect if we're running on localhost
-IS_LOCAL = socket.gethostbyname(socket.gethostname()).startswith("127.")
+# IS_LOCAL = socket.gethostbyname(socket.gethostname()).startswith("127.")
 
-if IS_LOCAL:
-    # use SQLite for local development
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-else:
-    # use Supabase/PostgreSQL for production
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=os.environ.get("DATABASE_URL"),
-            conn_max_age=600,
-            ssl_require=True
-        )
-    }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+# if IS_LOCAL:
+#     # use SQLite for local development
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': BASE_DIR / 'db.sqlite3',
+#         }
 #     }
-# }
+# else:
+#     # use Supabase/PostgreSQL for production
+#     DATABASES = {
+#         'default': dj_database_url.config(
+#             default=os.environ.get("DATABASE_URL"),
+#             conn_max_age=600,
+#             ssl_require=True
+#         )
+#     }
 
 
 # STATIC FILES CONFIG (CSS, JavaScript, Images)

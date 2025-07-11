@@ -23,6 +23,7 @@ class UserInOrg(models.Model):
         return f'User {self.user_id} in {self.org_id}'
     
 
+# project_status, due_date, and description are not used currently
 class Project(models.Model):
     STATUS_CHOICES = [
         ('not started', 'Not Started'),
@@ -125,7 +126,7 @@ class TaskJoinRequest(models.Model):
     dismissed_at = models.DateTimeField(null=True, blank=True)
 
     def can_resend(self):
-        # allow resending a join request 24 hours after dismissal
+        # allow resending a join request 1 min after dismissal
         if self.status == 'dismissed' and self.dismissed_at:
             return now() >= self.dismissed_at + timedelta(minutes=1)
         return False
