@@ -25,7 +25,6 @@ body {
 }
 
 html {
-    /* min-width: 550px; */
     position: relative;  
 }
 
@@ -1099,7 +1098,7 @@ form .checkbox-label {
     color: #155724;
     border-radius: 5px;
     width: 90%;
-    max-width: 600px;
+    max-width: 390px;
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     opacity: 1; /* ensure the banner is initially visible */
