@@ -166,7 +166,8 @@ SOCIALACCOUNT_PROVIDERS = {
 CSRF_COOKIE_SECURE = True
 
 MIDDLEWARE = [
-    # For serving static files on Heroku
+    "django.middleware.security.SecurityMiddleware",
+    # For serving static files on deployment
     "whitenoise.middleware.WhiteNoiseMiddleware",
 
     # For Google login
@@ -175,7 +176,6 @@ MIDDLEWARE = [
     # For CSP
     #"csp.middleware.CSPMiddleware",
 
-    "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -246,7 +246,7 @@ USE_TZ = True
 
 
 # Enable WhiteNoise compression and caching
-### STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
