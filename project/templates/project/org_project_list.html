@@ -85,11 +85,13 @@
 {% if project_tasks %}
    <div class="project-list">
         {% for project_data in project_tasks %}
+        <div class="project-card">
+
             <div class="project-header">
                 <h2>{{ project_data.project.project_name }}</h2>
                 {% if project_data.is_project_owner and not request.session.is_pma_admin %}
                 <!-- Add Task -->
-                <a href="{% url 'add_task' org_id=org.org_id project_id=project_data.project.project_id %}" class="btn">
+                <a href="{% url 'add_task' org_id=org.org_id project_id=project_data.project.project_id %}" id="full-view-add-task-btn" class="btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 -960 960 960">
                         <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80z"/>
                     </svg>
@@ -97,7 +99,19 @@
                 </a>
                 {% endif %}
             </div>
+
             <p class="created-on">Project created on {{ project_data.project.created_at|date:"F j, Y" }}.</p>
+
+            {% if project_data.is_project_owner and not request.session.is_pma_admin %}
+                <!-- Add Task -->
+                <!-- <a href="{% url 'add_task' org_id=org.org_id project_id=project_data.project.project_id %}" id="mobile-view-add-task-btn" class="btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 -960 960 960">
+                        <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80z"/>
+                    </svg>
+                    <span style="margin-left: 0.5rem;">Task</span>
+                </a> -->
+                <a href="{% url 'add_task' org_id=org.org_id project_id=project_data.project.project_id %}" id="mobile-view-add-task-btn" class="btn">New Task</a>
+            {% endif %}
 
             {% if project_data.tasks %}
                     {% for task_data in project_data.tasks %}
@@ -250,14 +264,16 @@
                     {% endfor %}
             {% else %}
                 <div class="task-item">
-                    <p>No tasks assigned to this project yet.</p>
+                    <p><em>No tasks assigned to this project yet.</em></p>
                 </div>
             {% endif %}
+
+        </div>
         {% endfor %}
     </div>
 {% else %}
     <div class="project-list">
-        <div class="task-item">
+        <div class="task-item" style="margin: 2.5rem 2.5rem 0 2.5rem;">
             <p>No projects found for this organization.</p>
         </div>
     </div>
