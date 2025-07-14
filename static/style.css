@@ -461,6 +461,15 @@ form .checkbox-label {
     display: none;
     margin: 1.2rem 1rem 0 1rem;
 }
+#edit-collab-btn {
+    margin-top: 0;
+}
+.full-view-task-button-container .task-button-container {
+    display: flex;
+}
+.mobile-view-task-button-container {
+    display: none;
+}
 .org-project-background {
     background-color: var(--background-color);
 }
@@ -570,6 +579,7 @@ form .checkbox-label {
 .task-header strong {
     font-size: 2.2rem;
     font-weight: 500;
+    line-height: 1.3;
 }
 .task-info-row {
     display: grid;
@@ -710,6 +720,7 @@ form .checkbox-label {
 /* smaller button */
 .outline-btn-sm {
     display: flex;
+    justify-content: center;
     align-items: center;
     text-decoration: none;
     background-color: var(--orange-25);
@@ -847,9 +858,11 @@ form .checkbox-label {
 }
 /* timestamp styling */
 .message-timestamp {
+    display: flex; 
     font-size: 1.6rem;
     color: gray;
     white-space: nowrap;
+    justify-content: flex-end;
 }
 .timestamp-n-btn {
     display: flex;
@@ -890,7 +903,7 @@ form .checkbox-label {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    margin: 20px;
+    margin: 3rem;
 }
 
 /* BUTTONS */
@@ -1142,7 +1155,6 @@ form .checkbox-label {
     font-size: 1.6rem;
     border: 1px solid #ccc;
     border-radius: 8px;
-    /* box-sizing: border-box; */
 }
 
 /* GENERAL FORM CONTAINER */
@@ -1182,7 +1194,7 @@ form .checkbox-label {
     font-size: 1.6rem;
     border: 1px solid #ccc;
     border-radius: 8px;
-    /* box-sizing: border-box; */
+    box-sizing: border-box;
     margin-bottom: 2rem;
 }
 
@@ -1264,11 +1276,11 @@ form .checkbox-label {
     }
 
     .logo-text {
-        font-size: 2.8rem;
+        font-size: 2.6rem;
     }
 
     header {
-        font-size: 2.8rem;
+        font-size: 2.6rem;
         line-height: 1.5;
     }
 
@@ -1283,6 +1295,14 @@ form .checkbox-label {
     p {
         font-size: 1.6rem;
     }
+
+    ul {
+        padding: 1rem;
+    }
+
+    li {
+        font-size: 1.6rem;
+    }
     
     .user-mode .btn,
     .user-mode .outline-btn,
@@ -1291,6 +1311,14 @@ form .checkbox-label {
         font-size: 1.6rem;
         padding: 0.5rem 1rem;
         line-height: 1.4;
+    }
+
+    .user-mode .outline-btn-sm,
+    .pma-admin-mode .outline-btn-sm {
+        font-size: 1.4rem;
+        padding: 0.5rem 1rem;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
     }
 
     .user-name {
@@ -1303,15 +1331,10 @@ form .checkbox-label {
         gap: 0.75rem;
     }
 
-    .user-mode .outline-btn-sm,
-    .pma-admin-mode .outline-btn-sm {
-        font-size: 1.4rem;
-        padding: 0.5rem 1rem;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
-
     /* organization project page */
+    .project-card {
+        padding: 1.5rem 1.5rem 2rem 1.5rem;
+    }
     .org-project-message-form {
         flex-direction: column;
         align-items: stretch;
@@ -1330,6 +1353,7 @@ form .checkbox-label {
     }
     .task-item {
         margin: 2.5rem 1rem 0 1rem;
+        padding: 2rem 1.7rem 2em 1.7rem;
     }
     #full-view-add-task-btn {
         display: none;
@@ -1337,6 +1361,61 @@ form .checkbox-label {
     #mobile-view-add-task-btn {
         display: flex;
     }
+    .full-view-task-button-container .task-button-container,
+    .full-view-task-button-container #join-request-btn {
+        display: none;
+    }
+    .mobile-view-task-button-container {
+        display: block;
+    }
+    .mobile-view-task-button-container .task-button-container,
+    .mobile-view-task-button-container #join-request-btn {
+        display: flex;
+        gap: 1.5rem;
+    }
+    .mobile-view-task-button-container .outline-btn-sm {
+        flex: 1;
+    }
+    #mobile-view-edit-task-btn {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    #mobile-view-delete-task-btn {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    .task-info-row {
+        display: grid;
+        grid-template-columns: 1fr; /* single column */
+        grid-template-areas:
+            "large" /* collaborators */
+            "small1" /* due date */
+            "small2"; /* status */
+        gap: 2rem; /* vertical spacing */
+    }
+    .org-project-message-form {
+        flex-direction: column; /* stack input & buttons */
+        align-items: center; /* center them horizontally */
+    }
+    .message-item {
+        grid-template-columns: 1fr;
+    }
+    .message-timestamp {
+        justify-content: flex-start;
+    }
+    .message-content {
+        margin-right: 0;
+    }
+    .message-form input[type="text"] {
+        font-size: 1.4rem;
+    }
+    .org-project-message-form input[type="text"] {
+        font-size: 1.4rem;
+    }
+    .org-project-message-form input {
+        margin-right: 0;
+    }
+
 
     /* user dashboard page */
     .dashboard-container {
@@ -1373,5 +1452,15 @@ form .checkbox-label {
     }
     #task-counter {
         align-self: center;
+    }
+
+    /* edit task page */
+    .navbar-container {
+        gap: 1rem;
+    }
+
+    /* post message page */
+    .timestamp-n-btn {
+        justify-content: space-between;
     }
 }

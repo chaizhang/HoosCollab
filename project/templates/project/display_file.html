@@ -25,7 +25,7 @@
     {% elif file_extension == "pdf" %}
         <iframe src="{{ file_url }}" class="file-iframe"></iframe>
     {% else %}
-    <p style="margin-top: 3rem; margin-bottom: 3rem;"><em>Clicking the button below will open the text file in another tab.</em></p>
+    <p style="margin: 3rem;"><em>Clicking the button below will open the text file in another tab.</em></p>
         <div class="view-file-button-container">
             <a href="{{ file_url }}" target="_blank" class="btn">View Uploaded Text File</a>
         </div>
