@@ -5,17 +5,17 @@
     --blue-25: #C8CBD2;
     --orange-25: #F9DCBF;
     --border-color: rgba(0, 0, 0, 0.25);
-    --card-color: #F1F1F1;
-    --project-card-color: #e9e6e2;
-    --pma-mode-card-color: #EEF0F5; /* more blue-tinted */
+    --card-color: hsl(30, 12%, 95%);
+    --pma-mode-card-color: hsl(222, 12%, 95%);
     --background-color: #dfdfdf;
-    --pma-mode-background-color: #DDE0E8; /* more blue-tinted */
     --not-started-status: #999999;
     --in-progress-status: #E57200;
     --completed-status: #00AD3A;
     --stuck-status: #E40202;
     --review-status: #008EE6;
     --footer-container-height: 20px;
+    --project-card-color: hsl(30, 15%, 90%);
+    --pma-mode-project-card-color: hsl(222, 15%, 90%);
     font-size: 62.5%; /* approximately 16px */
 }
 
@@ -189,10 +189,6 @@ div {
 }
 
 /* USER DASHBOARD PAGE */
-/* .pronoun {
-    color: var(--blue-25);
-    font-size: 3.8rem;
-} */
 .profile-banner-container {
     display: block;
     position: relative;
@@ -202,8 +198,8 @@ div {
 .profile-banner {
     width: auto;
     max-width: 100%;
-    height:150px;
-    background:var(--blue-25);
+    height: 150px;
+    background-color: var(--project-card-color);
     margin: 10px;
     border-radius: 0.7rem;
 }
@@ -211,16 +207,15 @@ div {
     width: auto;
     max-width: 100%;
     height:150px;
-    background:var(--blue-25);
+    background-color: var(--pma-mode-project-card-color);
     margin: 10px;
 }
 .profile-photo {
     position: absolute;
     top: 60px;
-    left: 30px;
     width: 125px;
     height: 125px;
-    padding-left: 2rem;
+    padding-left: 4rem;
 }
 .user-role-container {
     display: flex;
@@ -281,7 +276,7 @@ div {
     font-weight: 500;
     color: grey;
     margin-right: 10px;
-    min-width: 150px; /* ensures alignment */
+    min-width: 150px;
     display: inline-block;
 }
 #switch-role-btn {
@@ -297,7 +292,7 @@ div {
 }
 .org-list-container {
     max-width: 30vw;
-    flex-shrink: 1; /* allow shrinking if necessary */
+    flex-shrink: 1;
     /* box-sizing: border-box; */
     border: 2px solid lightgray;
     border-radius: 25px;
@@ -315,12 +310,12 @@ div {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2.5rem; /* space between header and buttons */
+    gap: 2.5rem;
     margin: auto 4rem 4rem 4rem;
     background-color: var(--card-color);
 }
 .pma-admin-mode .dashboard-container {
-    background-color: var(--card-color);
+    background-color: var(--pma-mode-card-color);
 }
 .dashboard-header {
     display: flex;
@@ -331,8 +326,8 @@ div {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
-    width: 100%; /* ensures the grid takes full width of container */
-    align-items: stretch; /* ensure all buttons in a row stretch to the same height */
+    width: 100%;
+    align-items: stretch;
 }
 @media (max-width: 1024px) {
     .button-grid {
@@ -400,12 +395,10 @@ div {
     flex-direction: column;
     gap: 2.5rem;
     margin: 0 3rem 0 3rem;
-    /* padding: 2.0rem 2.0rem 2.0rem 2.0rem; */
 }
 .sub-title {
     font-size: 2.4rem;
     font-weight: 500;
-    /* color: var(--orange); */
     margin-bottom: 10px;
 }
 
@@ -416,15 +409,15 @@ div {
 .pma-admin-mode .form-section p label {
     font-weight: 400;
 }
-.pma-admin-mode .custom-form-container h2 {
-    color: var(--lighter-blue);
-}
 
 /* form rectangle background */
 .form-background-rect {
     background-color: var(--card-color);
     padding: 3rem;
     border-radius: 16px;
+}
+.form-background-rect {
+    background-color: var(--pma-mode-card-color);
 }
 /* form buttons */
 .button-container {
@@ -437,7 +430,10 @@ div {
 
 /* checklist styling */
 input[type="checkbox"] {
-    accent-color: var(--orange); /* makes checked boxes orange */
+    accent-color: var(--orange);
+}
+.pma-admin-mode input[type="checkbox"] {
+    accent-color: var(--lighter-blue);
 }
 form .checkbox-label {
     font-size: 2.0rem;
@@ -454,6 +450,9 @@ form .checkbox-label {
     margin-right: 2.5rem;
     box-shadow: 2px 4px 4px rgba(0,0,0,0.1);
 }
+.pma-admin-mode .project-card {
+    background-color: var(--pma-mode-project-card-color);
+}
 #full-view-add-task-btn {
     display: flex;
 }
@@ -469,9 +468,6 @@ form .checkbox-label {
 }
 .mobile-view-task-button-container {
     display: none;
-}
-.org-project-background {
-    background-color: var(--background-color);
 }
 /* organization header */
 .org-header {
@@ -522,7 +518,6 @@ form .checkbox-label {
     .btn .btn-text {
         display: none;
     }
-
     .btn .btn-icon {
         margin-right: 0;
     }
@@ -536,7 +531,6 @@ form .checkbox-label {
 
 /* project section */
 .project-list {
-    /* background-color: var(--background-color); */
     padding-top: 2.5rem;
     padding-bottom: 2.5rem;
 }
@@ -544,7 +538,6 @@ form .checkbox-label {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    /* align-items: center; */
     padding: 1rem 2.5rem 0 2.5rem;
 }
 .project-header h2 {
@@ -565,6 +558,9 @@ form .checkbox-label {
     margin: 2.5rem 2.5rem 0 2.5rem;
     box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
     background-color: var(--card-color);
+}
+.pma-admin-mode .task-item {
+    background-color: var(--pma-mode-card-color);
 }
 .task-item p {
     font-weight: 500;
@@ -653,14 +649,14 @@ form .checkbox-label {
 .file-link:hover {
     color: var(--orange);
 }
+.pma-admin-mode .file-link:hover {
+    color: var(--lighter-blue);
+}
 .task-messages {
     padding: 20px;
     background-color: white;
     border-radius: 5px;
     border: 1.5px solid var(--orange);
-}
-.pma-admin-mode .task-messages {
-    background-color: var(--pma-mode-card-color);
 }
 .task-messages h4 {
     display: inline;
@@ -714,7 +710,7 @@ form .checkbox-label {
   display: inline-flex; /* shrink to fit content */
   justify-content: center;
   align-items: center;
-  margin: 1rem auto; /* centers inside block-level parent */
+  margin: 1rem auto;
 }
 
 /* smaller button */
@@ -878,8 +874,7 @@ form .checkbox-label {
     margin-right: 3rem;
 }
 .file-display {
-    text-align: center; /* center image */
-    /* margin: 3rem auto; */
+    text-align: center;
 }
 .file-image {
     max-width: 80%;
@@ -891,7 +886,7 @@ form .checkbox-label {
     height: 600px;
     margin: 3rem auto;
     border: 1px solid lightgray;
-    display: block; /* ensure it centers as a block */
+    display: block;
 }
 .view-file-button-container {
     display: flex;
@@ -915,14 +910,14 @@ form .checkbox-label {
     border: 1.5px solid var(--orange);
     border-radius: 15px;
     padding: 0.5rem 1.2rem;
-    white-space: normal; /* nowrap */
+    white-space: normal;
     text-align: center;
     font-size: 2.0rem;
-    display: flex; /* flexbox ensures alignment of content */
-    justify-content: center; /* center-align horizontally */
-    align-items: center; /* center-align vertically */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center; /* ensure proper alignment for wrapped text */
-    word-wrap: break-word; /* prevent content overflow */
+    word-wrap: break-word;
 }
 .user-mode .btn:hover {
     background-color: #c86401;
@@ -1066,14 +1061,12 @@ form .checkbox-label {
     vertical-align: middle;
     display: inline-block;
 }
-
 .user-mode .delete-msg-btn:hover {
     background-color: var(--orange);
     color: white;
     border-color: var(--orange);
     border-radius: 15px;
 }
-
 .pma-admin-mode .delete-msg-btn {
     text-decoration: none;
     background-color: var(--blue-25);
@@ -1105,12 +1098,10 @@ form .checkbox-label {
 
 .public-org-project-container {
     padding: 2rem;
-    /* border: solid 1.5px rgba(0, 0, 0, 0.25); */
     border-radius: 2rem;
-    background-color: var(--card-color);
+    background-color: hsl(0, 0%, 94%);
     box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
 }
-
 /* list of projects under a certain org */
 .public-project-list p {
     margin-top: 1.0rem;
@@ -1174,7 +1165,7 @@ form .checkbox-label {
     margin-bottom: 0;
 }
 .pma-admin-mode .custom-form-container h2 {
-    color: var(--ligher-blue);
+    color: var(--lighter-blue);
 }
 
 /* label styling */
@@ -1224,6 +1215,7 @@ form .checkbox-label {
     height: 100%;
     cursor: pointer;
 }
+
 /* custom file input styling */
 .custom-file-input {
     font-family: "Work Sans", sans-serif;
@@ -1253,6 +1245,9 @@ form .checkbox-label {
 .uploaded-files .file-link:hover {
     color: var(--orange);
 }
+.pma-admin-mode .uploaded-files .file-link:hover {
+    color: var(--lighter-blue);
+}
 
 /* MANAGE JOIN REQUEST PAGE */
 .join-request-item {
@@ -1268,17 +1263,6 @@ form .checkbox-label {
 }
 
 @media (max-width: 600px) {
-    /* landing page */
-    .navbar-btn-container {
-        justify-content: flex-end;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    .logo-text {
-        font-size: 2.6rem;
-    }
-
     header {
         font-size: 2.6rem;
         line-height: 1.5;
@@ -1331,6 +1315,16 @@ form .checkbox-label {
         gap: 0.75rem;
     }
 
+    /* landing page */
+    .navbar-btn-container {
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    .logo-text {
+        font-size: 2.6rem;
+    }
+
     /* organization project page */
     .project-card {
         padding: 1.5rem 1.5rem 2rem 1.5rem;
@@ -1344,6 +1338,9 @@ form .checkbox-label {
     }
     .collapsible-content.active .outline-btn-sm {
         margin: 1.5rem 0 0 0;
+    }
+    .pma-admin-mode .collapsible-content.active .outline-btn-sm {
+        margin: 0 0 1.5rem 0;
     }
     .project-header {
         padding: 1rem 1rem 0 1rem;
@@ -1391,11 +1388,11 @@ form .checkbox-label {
             "large" /* collaborators */
             "small1" /* due date */
             "small2"; /* status */
-        gap: 2rem; /* vertical spacing */
+        gap: 2rem;
     }
     .org-project-message-form {
-        flex-direction: column; /* stack input & buttons */
-        align-items: center; /* center them horizontally */
+        flex-direction: column;
+        align-items: center;
     }
     .message-item {
         grid-template-columns: 1fr;
@@ -1415,7 +1412,6 @@ form .checkbox-label {
     .org-project-message-form input {
         margin-right: 0;
     }
-
 
     /* user dashboard page */
     .dashboard-container {
