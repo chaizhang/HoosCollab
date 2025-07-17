@@ -23,23 +23,22 @@ class UserInOrg(models.Model):
         return f'User {self.user_id} in {self.org_id}'
     
 
-# project_status, due_date, and description are not used currently
 class Project(models.Model):
-    STATUS_CHOICES = [
-        ('not started', 'Not Started'),
-        ('in progress', 'In Progress'),
-        ('completed', 'Completed'),
-        ('stuck', 'Stuck'),
-        ('awaiting review', 'Awaiting Review'),
-    ]
+    # STATUS_CHOICES = [
+    #     ('not started', 'Not Started'),
+    #     ('in progress', 'In Progress'),
+    #     ('completed', 'Completed'),
+    #     ('stuck', 'Stuck'),
+    #     ('awaiting review', 'Awaiting Review'),
+    # ]
     project_id = models.AutoField(primary_key=True)
     org_id = models.ForeignKey(Org, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     project_name = models.CharField(max_length=60)
-    due_date = models.DateField(blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    project_status = models.CharField(choices=STATUS_CHOICES, max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
+    # due_date = models.DateField(blank=True, null=True)
+    # description = models.TextField(blank=True, null=True)
+    # project_status = models.CharField(choices=STATUS_CHOICES, max_length=50)
 
     class Meta:
         unique_together = ('project_id', 'org_id')  # composite primary key
