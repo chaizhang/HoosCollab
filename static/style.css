@@ -1420,6 +1420,9 @@ form .checkbox-label {
     .org-project-message-form input {
         margin-right: 0;
     }
+    .edit-collab-btn-text {
+        display: none;
+    }
 
     /* user dashboard page */
     .dashboard-container {
