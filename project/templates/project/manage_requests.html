@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<nav class="navbar-container">
+    <header>Manage Collaborators for Task: {{ task.task_name }}</header>
+    <!-- <a href="{% url 'org_project_list' org_id=org_id %}" class="outline-btn">Back to Projects</a> -->
+</nav>
+
+<div class="custom-form-container">
+    <div class="form-background-rect">
+
+        <!-- Pending Join Requests -->
+        <h2>Pending Join Requests</h2>
+        {% if pending_requests %}
+            <ul>
+                {% for request in pending_requests %}
+                    <li>
+                        {{ request.user.get_full_name|default:request.user.username }} sent a request on {{ request.requested_at }}
+                        <form method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="request_id" value="{{ request.id }}">
+                            <div class="button-container">
+                                <button type="submit" name="action" value="approve" class="btn">Approve</button>
+                                <button type="submit" name="action" value="dismiss" class="outline-btn">Dismiss</button>
+                            </div>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No pending join requests.</p>
+        {% endif %}
+    
+        <!-- Edit Collaborators -->
+        <h2>Edit Collaborators</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ collaborator_form.as_p }}
+            <div class="button-container">
+                <button type="submit" name="edit_collaborators" class="btn">Save Collaborators</button>
+                <a href="{% url 'org_project_list' org_id %}" class="outline-btn">Cancel</a>
+            </div>
+        </form>
+    
+    </div>
+</div>
+
+{% endblock %}

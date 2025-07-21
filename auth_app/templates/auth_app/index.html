@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+{% load static %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        {% if messages %}
+        <script>
+            // wait for the DOM to be fully loaded
+            document.addEventListener('DOMContentLoaded', function () {
+                const banner = document.getElementById('messages-banner');
+        
+                if (banner) {
+                    // automatically hide the banner after 3 seconds
+                    setTimeout(function () {
+                        banner.style.transition = "opacity 0.5s ease-out"; // add smooth transition
+                        banner.style.opacity = "0"; // set opacity to 0 (fade-out effect)
+        
+                        // remove the banner from the DOM after the transition ends
+                        setTimeout(function () {
+                            banner.remove();
+                        }, 500); // match this timeout with the CSS transition duration
+                    }, 3000); // delay before starting the fade-out
+                }
+            });
+        </script>
+
+        <div id="messages-banner">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="profile-banner-container">
+            <div class="profile-banner"></div>
+            <img src="{% static 'profile_photo_placeholder.png' %}" class="profile-photo">
+        </div>
+
+        <div class="new-profile-container">
+            <div class="name">
+                <header class="user-name">
+                    {{ first_name }} {{ last_name }}
+                </header>
+            </div>
+    
+            <div class="buttons">
+                <div class="profile-buttons-container">
+                    <!-- <a href="{% url 'profile' %}" class="btn">Edit Profile</a> -->
+                    <a href="{% url 'profile' %}" class="btn">
+                        <span id="edit-profile-btn-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391zm-80 80v-170l528-527q12-11 26.5-17t30.5-6 31 6 26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120zm640-584-56-56zm-141 85-28-29 57 57z"/></svg>
+                        </span>
+                        <span id="edit-profile-btn-text-full">Edit Profile</span>
+                        <span id="edit-profile-btn-text-mobile">Profile</span>
+                    </a>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="outline-btn" type="submit">Log Out</button>
+                    </form>
+                </div>
+            </div>
+                
+            <div class="details">
+                <div class="profile-details-container">
+                    <div class="icon-n-text-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" fill="gray" viewBox="0 0 512 512">
+                            <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                            <path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>
+                        <p><span class="profile-label">Email</span></p>
+                    </div>
+                    <p style="word-break: break-word;">{{ user.email }}</p>
+                </div>
+
+                <div class="profile-details-container">
+                    <div class="icon-n-text-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" fill="gray" viewBox="0 0 512 512">
+                            <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                            <path d="M181.3 32.4c17.4 2.9 29.2 19.4 26.3 36.8L197.8 128l95.1 0 11.5-69.3c2.9-17.4 19.4-29.2 36.8-26.3s29.2 19.4 26.3 36.8L357.8 128l58.2 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-68.9 0L325.8 320l58.2 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-68.9 0-11.5 69.3c-2.9 17.4-19.4 29.2-36.8 26.3s-29.2-19.4-26.3-36.8l9.8-58.7-95.1 0-11.5 69.3c-2.9 17.4-19.4 29.2-36.8 26.3s-29.2-19.4-26.3-36.8L90.2 384 32 384c-17.7 0-32-14.3-32-32s14.3-32 32-32l68.9 0 21.3-128L64 192c-17.7 0-32-14.3-32-32s14.3-32 32-32l68.9 0 11.5-69.3c2.9-17.4 19.4-29.2 36.8-26.3zM187.1 192L165.8 320l95.1 0 21.3-128-95.1 0z"/></svg>
+                        <p><span class="profile-label">Computing ID</span></p>
+                    </div>
+                        <p>
+                            {% if user.profile.computing_id %}
+                                {{ user.profile.computing_id }}
+                            {% else %}
+                                <em>Update your profile</em>
+                            {% endif %}
+                        </p>
+                </div>
+
+                <div class="profile-details-container">
+                    <div class="icon-n-text-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" fill="gray" viewBox="0 0 448 512">
+                            <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                            <path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L64 64C28.7 64 0 92.7 0 128l0 16 0 48L0 448c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-256 0-48 0-16c0-35.3-28.7-64-64-64l-40 0 0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L152 64l0-40zM48 192l352 0 0 256c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16l0-256z"/></svg>
+                        <p><span class="profile-label">Date Joined</span></p>
+                    </div>
+                    <p>{{ user.date_joined|date:"F j, Y" }}</p>
+                </div>
+
+                <div class="profile-details-container">
+                    <div class="icon-n-text-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" fill="gray" viewBox="0 0 448 512">
+                            <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                            <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/></svg>
+                        <p><span class="profile-label">User Role</span></p>
+                    </div>
+                        <p>{{ current_role }}</p>
+                </div>
+
+                <div class="profile-details-container">
+                    {% if can_be_pma_admin %}
+                    <form method="post" action="{% url 'switch_role' %}">
+                        {% csrf_token %}
+                        <button id="switch-role-btn" class="outline-btn-sm">Switch Role</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-main-container">
+            <div class="dashboard-container">
+                <h2 class="dashboard-header">Active Organizations {% if not is_pma_admin %}<a href="{% url 'manage_organizations' %}" id="edit-org-btn" class="outline-btn-sm">Edit</a>{% endif %}</h2>
+                {% if org_details %}
+                <div class="button-grid">
+                    {% for org in org_details %}
+                    <a href="{% url 'org_project_list' org.org_id %}" class="org-container-link">
+                        <div class="org-container">
+                            <div class="org-task-container">
+                                <div class="dashboard-org-name">{{ org.org_name }}</div>
+                                <div class="org-task-list">
+                                    <div class="org-task-item">
+                                        <span class="status-dot status-dot-not-started" style="width: 1.6rem; height: 1.6rem;"></span> Not Started: {{ org.task_counts.not_started }}
+                                    </div>
+                                    <div class="org-task-item">
+                                        <span class="status-dot status-dot-in-progress" style="width: 1.6rem; height: 1.6rem;"></span> In Progress: {{ org.task_counts.in_progress }}
+                                    </div>
+                                    <div class="org-task-item">
+                                        <span class="status-dot status-dot-stuck" style="width: 1.6rem; height: 1.6rem;"></span> Stuck: {{ org.task_counts.stuck}}
+                                    </div>
+                                    <div class="org-task-item">
+                                        <span class="status-dot status-dot-awaiting-review" style="width: 1.6rem; height: 1.6rem;"></span> Review: {{ org.task_counts.awaiting_review }}
+                                    </div>
+                                    <div class="org-task-item">
+                                        <span class="status-dot status-dot-completed" style="width: 1.6rem; height: 1.6rem;"></span> Done: {{ org.task_counts.completed }}
+                                    </div>
+                                </div>
+                                </div>
+
+                                <div class="task-count-container">
+                                    <p id="task-counter">{{ org.task_counts.total|default:0 }}</p>
+                                    <p style="color: gray; font-size: 1.6rem">Tasks</p>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                    <p>You are not part of any organization yet. Click "Edit" to join one.</p>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <a href="{% provider_login_url 'google' %}">Login with Google</a>
+    {% endif %}
+{% endblock %}

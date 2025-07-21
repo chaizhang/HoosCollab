@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% if messages %}
+        <script>
+            // wait for the DOM to be fully loaded
+            document.addEventListener('DOMContentLoaded', function () {
+                const banner = document.getElementById('messages-banner');
+
+                if (banner) {
+                    // automatically hide the banner after 3 seconds
+                    setTimeout(function () {
+                        banner.style.transition = "opacity 0.5s ease-out"; // add smooth transition
+                        banner.style.opacity = "0"; // set opacity to 0 (fade-out effect)
+
+                        // remove the banner from the DOM after the transition ends
+                        setTimeout(function () {
+                            banner.remove();
+                        }, 500); // match this timeout with the CSS transition duration
+                    }, 3000); // delay before starting the fade-out
+                }
+            });
+        </script>
+
+        <div id="messages-banner">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <nav class="navbar-container">
+        <header>Join Request for Task: {{ task.task_name }}</header>
+        <a href="{% url 'org_project_list' org_id=task.project_id.org_id.pk %}" class="outline-btn">Back to Projects</a>
+    </nav>
+
+    {% if join_request %}
+        {% if join_request.status == 'pending' %}
+            <div class="join-request-container">
+                <p>You have successfully sent a join request. Check back later for updates. 
+                    You will see yourself on the collaborator list and gain the ability to edit task details 
+                    once your request is approved. If your request is dismissed, you can try again after some time.</p>
+                <div class="button-container">
+                    <button class="btn" disabled>Join Request Sent</button>
+                </div>
+            </div>
+        {% elif join_request.status == 'dismissed' %}
+            {% if can_resend %}
+                <div class="join-request-container">
+                    <p>Your join request was dismissed. You can resend another join request now.</p>
+                    <div class="button-container">
+                        <form method="post" action="{% url 'send_join_request' org_id=task.project_id.org_id.pk task_id=task.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn">Resend Join Request</button>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <div class="join-request-container">
+                    <p>Your join request has been dismissed. You will not be able to send another join request 
+                        until 1 minute later.</p>
+                    <div class="button-container">
+                        <button class="btn" disabled>Join Request Unavailable</button>
+                    </div>
+                </div>
+            {% endif %}
+        {% elif join_request.status == 'approved' %}
+            {% if not is_task_collaborator %}
+                <div class="join-request-container">
+                    <p>If you would like to work on this task, click the button below to send a join request to the project 
+                        owner and task collaborators.</p>
+                    <div class="button-container">
+                        <form method="post" action="{% url 'send_join_request' org_id=task.project_id.org_id.pk task_id=task.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn">Send Join Request</button>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <div class="join-request-container">
+                    <p>You are already a collaborator for this task.</p>
+                    <div class="button-container">
+                        <button class="btn" disabled>Join Request Approved</button>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        <div class="join-request-container">
+            <p>If you would like to work on this task, click the button below to send a join request to the project 
+                owner and task collaborators.</p>
+            <div class="button-container">
+                <form method="post" action="{% url 'send_join_request' org_id=task.project_id.org_id.pk task_id=task.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn">Send Join Request</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}

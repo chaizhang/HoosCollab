@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+{% if messages %}
+<script>
+    // wait for the DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function () {
+        const banner = document.getElementById('messages-banner');
+
+        if (banner) {
+            // automatically hide the banner after 3 seconds
+            setTimeout(function () {
+                banner.style.transition = "opacity 0.5s ease-out"; // add smooth transition
+                banner.style.opacity = "0"; // set opacity to 0 (fade-out effect)
+
+                // remove the banner from the DOM after the transition ends
+                setTimeout(function () {
+                    banner.remove();
+                }, 500); // match this timeout with the CSS transition duration
+            }, 3000); // delay before starting the fade-out
+        }
+    });
+</script>
+
+<div id="messages-banner">
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+
+<script>
+    function toggleCollapsible(header) {
+        const icon = header.querySelector('.toggle-icon');
+        const content = header.nextElementSibling;
+
+        content.classList.toggle('active');
+
+        if (content.classList.contains('active')) {
+            icon.textContent = '-';
+        } else {
+            icon.textContent = '+';
+        }
+    }
+</script>
+
+<div class="org-header">
+    <header class="org-name">Projects for {{ org.org_name }}</header>
+    <div class="header-right">
+        {% if not is_pma_admin %}
+            <!-- New Project -->
+            <a href="{% url 'edit_project' org_id=org_id %}" class="btn">
+                <span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 -960 960 960">
+                    <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80z"/>
+                </svg></span>
+                <span class="btn-text" style="margin-left: 0.5rem;">Project</span>
+            </a>
+
+            <!-- Delete Project -->
+            <a href="{% url 'delete_project' org_id=org_id %}" class="btn">
+                <span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 -960 960 960">
+                    <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120zm400-600H280v520h400zM360-280h80v-360h-80zm160 0h80v-360h-80zM280-720v520z"/>
+                </svg></span>
+                <span class="btn-text" style="margin-left: 0.5rem;">Project</span>
+            </a>
+        {% endif %}
+
+        {% if is_pma_admin %}
+            <!-- Delete Project -->
+            <a href="{% url 'delete_project' org_id=org_id %}" class="btn">
+                <span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 -960 960 960">
+                    <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120zm400-600H280v520h400zM360-280h80v-360h-80zm160 0h80v-360h-80zM280-720v520z"/>
+                </svg></span>
+                <span class="btn-text" style="margin-left: 0.5rem;">Project</span>
+            </a>
+        {% endif %}
+
+        <a href="{% url 'user' %}" class="outline-btn">Home</a>
+
+    </div>
+</div>
+
+{% if project_tasks %}
+   <div class="project-list">
+        {% for project_data in project_tasks %}
+        <div class="project-card">
+
+            <div class="project-header">
+                <h2>{{ project_data.project.project_name }}</h2>
+                {% if project_data.is_project_owner and not request.session.is_pma_admin %}
+                <!-- Add Task -->
+                <a href="{% url 'add_task' org_id=org.org_id project_id=project_data.project.project_id %}" id="full-view-add-task-btn" class="btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 -960 960 960">
+                        <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80z"/>
+                    </svg>
+                    <span style="margin-left: 0.5rem;">Task</span>
+                </a>
+                {% endif %}
+            </div>
+
+            <p class="created-on">Project created on {{ project_data.project.created_at|date:"F j, Y" }}.</p>
+
+            {% if project_data.is_project_owner and not request.session.is_pma_admin %}
+                <!-- Add Task -->
+                <!-- <a href="{% url 'add_task' org_id=org.org_id project_id=project_data.project.project_id %}" id="mobile-view-add-task-btn" class="btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 -960 960 960">
+                        <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80z"/>
+                    </svg>
+                    <span style="margin-left: 0.5rem;">Task</span>
+                </a> -->
+                <a href="{% url 'add_task' org_id=org.org_id project_id=project_data.project.project_id %}" id="mobile-view-add-task-btn" class="btn">New Task</a>
+            {% endif %}
+
+            {% if project_data.tasks %}
+                    {% for task_data in project_data.tasks %}
+                        <div class="task-item">
+                            <div class="full-view-task-button-container">
+                                <div class="task-header">
+                                <strong>{{ task_data.task.task_name }}</strong>
+
+                                {% if project_data.is_project_owner or is_pma_admin or task_data.is_task_collaborator %}
+                                    <div class="task-button-container">
+                                        <!-- Edit Task -->
+                                        <a href="{% url 'edit_task' org_id=org.org_id task_id=task_data.task.task_id %}" class="outline-btn-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 -960 960 960">
+                                                <path d="M200-200h57l391-391-57-57-391 391zm-80 80v-170l528-527q12-11 26.5-17t30.5-6 31 6 26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120zm640-584-56-56zm-141 85-28-29 57 57z"/>
+                                            </svg>
+                                            <span style="margin-left: 0.5rem;">Task</span>
+                                        </a>
+                                        
+                                        {% if project_data.is_project_owner or is_pma_admin %}
+                                            <!-- Delete Task -->
+                                            <a href="{% url 'delete_task_confirm' org_id=org.org_id task_id=task_data.task.task_id %}" class="outline-btn-sm">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 -960 960 960">
+                                                    <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120zm400-600H280v520h400zM360-280h80v-360h-80zm160 0h80v-360h-80zM280-720v520z"/>
+                                                </svg>
+                                                <span style="margin-left: 0.5rem;">Task</span>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                {% else %}  
+                                    {% if not request.session.is_pma_admin %}
+                                        {% if not task_data.is_task_collaborator %}
+                                            <!-- <a href="{% url 'send_join_request' org_id=org.org_id task_id=task_data.task.task_id %}" class="outline-btn-sm">Join Request</a> -->
+                                            <a href="{% url 'join_request' org_id=org.org_id task_id=task_data.task.task_id %}" id="join-request-btn" class="outline-btn-sm">Join Request</a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                                </div>
+                            </div>
+
+                            <p class="task-created-on" style="font-weight: 400;">Task created on {{ task_data.task.created_at|date:"F j, Y" }}.</p>
+                            
+                            <!-- MOBILE-ONLY Edit/Delete Task Buttons -->
+                            <div class="mobile-view-task-button-container">
+                                {% if project_data.is_project_owner or is_pma_admin or task_data.is_task_collaborator %}
+                                <div class="task-button-container">
+                                    <!-- Edit Task -->
+                                    <a href="{% url 'edit_task' org_id=org.org_id task_id=task_data.task.task_id %}" id="mobile-view-edit-task-btn" class="outline-btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 -960 960 960">
+                                            <path d="M200-200h57l391-391-57-57-391 391zm-80 80v-170l528-527q12-11 26.5-17t30.5-6 31 6 26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120zm640-584-56-56zm-141 85-28-29 57 57z"/>
+                                        </svg>
+                                        <span style="margin-left: 0.5rem;">Task</span>
+                                    </a>
+                                    
+                                    {% if project_data.is_project_owner or is_pma_admin %}
+                                        <!-- Delete Task -->
+                                        <a href="{% url 'delete_task_confirm' org_id=org.org_id task_id=task_data.task.task_id %}" id="mobile-view-delete-task-btn" class="outline-btn-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 -960 960 960">
+                                                <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120zm400-600H280v520h400zM360-280h80v-360h-80zm160 0h80v-360h-80zM280-720v520z"/>
+                                            </svg>
+                                            <span style="margin-left: 0.5rem;">Task</span>
+                                        </a>
+                                    {% endif %}
+                                </div>
+
+                                {% else %}  
+                                    {% if not request.session.is_pma_admin %}
+                                        {% if not task_data.is_task_collaborator %}
+                                                <!-- <a href="{% url 'send_join_request' org_id=org.org_id task_id=task_data.task.task_id %}" class="outline-btn-sm">Join Request</a> -->
+                                                <a href="{% url 'join_request' org_id=org.org_id task_id=task_data.task.task_id %}" id="join-request-btn" class="outline-btn-sm">Join Request</a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+
+                            <div class="task-info-row">
+                                <div class="task-collaborators task-info-row-large">
+                                    <div class="task-collaborators-header">
+                                        <h4 style="margin-bottom: 2rem;">Collaborators</h4>
+                                        {% if not is_pma_admin %}
+                                            {% if project_data.is_project_owner or task_data.is_task_collaborator %}
+                                                <!-- Edit Collaborators -->
+                                                <a href="{% url 'manage_join_requests' org_id=org.org_id task_id=task_data.task.task_id %}" id="edit-collab-btn" class="outline-btn-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 -960 960 960">
+                                                        <path d="M200-200h57l391-391-57-57-391 391zm-80 80v-170l528-527q12-11 26.5-17t30.5-6 31 6 26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120zm640-584-56-56zm-141 85-28-29 57 57z"/>
+                                                    </svg>
+                                                    <span class="edit-collab-btn-text" style="margin-left: 0.5rem;">Collaborator</span>
+                                                </a>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                    <p>
+                                        {% if task_data.collaborators %}
+                                            {% for collaborator in task_data.collaborators %}
+                                                {{ collaborator.get_full_name|default:collaborator.username }}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            None
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                    <div class="task-due-date task-info-row-small1">
+                                        <h4 style="margin-bottom: 2rem;">Due Date</h4>
+                                        <p>{{ task_data.task.due_date }}</p>
+                                    </div>
+                                    <div class="task-status task-status-{{ task_data.task.task_status|slugify }} task-info-row-small2">
+                                        <h4 style="margin-bottom: 2rem;">Status</h4>
+                                        <p>
+                                            <span class="status-dot status-dot-{{ task_data.task.task_status|slugify }}"></span>
+                                            {% if task_data.task.task_status == 'in progress' %}In Progress
+                                            {% elif task_data.task.task_status == 'completed' %}Completed
+                                            {% elif task_data.task.task_status == 'stuck' %}Stuck
+                                            {% elif task_data.task.task_status == 'awaiting review' %}In Review
+                                            {% else %}Not Started
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                            </div>
+
+                            <div class="task-info-row-2">
+                                <div class="task-description">
+                                    <h4 style="margin-bottom: 2rem;">Description</h4>
+                                    <p>{{ task_data.task.description }}</p>
+                                </div>
+                                <div class="task-files">
+                                    <h4 style="margin-bottom: 2rem;">Files</h4>
+                                    <ul>
+                                        {% for file in task_data.files %}
+                                            <li><a href="{% url 'serve_taskfile' org_id=org.org_id file_id=file.id %}" class="file-link">{{ file.title }}</a></li>
+                                        {% empty %}
+                                            <p>No files uploaded for this task.</p>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="task-messages-collapsible">
+                                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                                    <h4>Messages</h4>
+                                    <span class="toggle-icon">+</span>
+                                </div>
+                                <div class="collapsible-content">
+                                    {% if project_data.is_project_owner or task_data.is_task_collaborator or is_pma_admin %}
+                                        <ul class="messages-container">
+                                            {% for message in task_data.messages|slice:":3" %}
+                                                <li class="message-item"; style="font-size: 1.6rem;">
+                                                    <span class="message-content">
+                                                        <span class="message-username">
+                                                            {{ message.user.get_full_name|default:message.user.username }}
+                                                        </span>: {{ message.content }}
+                                                    </span>
+                                                    <span class="message-timestamp">{{ message.msg_timestamp|date:"Y-m-d H:i" }}</span>
+                                                </li>
+                                            {% empty %}
+                                                <p>No messages for this task yet.</p>
+                                            {% endfor %}
+                                        </ul>
+
+                                        {% if not is_pma_admin %}
+                                        <form method="post" class="org-project-message-form">
+                                            {% csrf_token %}
+                                            {{ task_data.message_form.content }}
+                                            <input type="hidden" name="task_id" value="{{ task_data.task.task_id }}">
+                                            <div class="message-form-button-container">
+                                                <button type="submit" class="outline-btn-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 -960 960 960">
+                                                        <path d="M120-160v-640l760 320zm80-120 474-200-474-200v140l240 60-240 60zm0 0v-400z"/>
+                                                    </svg>
+                                                </button>
+
+                                                <a href="{% url 'task_message' org_id=org.org_id task_id=task_data.task.task_id %}" class="outline-btn-sm">View All</a>
+                                            </div>
+                                        </form>
+                                        {% endif %}
+
+                                        {% if is_pma_admin %}
+                                        <div style="text-align: center;">
+                                            <a href="{% url 'task_message' org_id=org.org_id task_id=task_data.task.task_id %}" class="outline-btn-sm">View All Messages</a>
+                                        </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <p><em>You do not have permission to view messages for this task.</em></p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+            {% else %}
+                <div class="task-item">
+                    <p><em>No tasks assigned to this project yet.</em></p>
+                </div>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="project-list">
+        <div class="task-item" style="margin: 2.5rem 2.5rem 0 2.5rem;">
+            <p>No projects found for this organization.</p>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
