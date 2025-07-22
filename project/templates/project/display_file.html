@@ -9,11 +9,16 @@
 <div class="custom-form-container">
     <div class="form-background-rect">
         <p style="font-weight: 500;">Description:</p>
-        <p>{{ taskfile.file_description }}</p>
-        <!-- <p>Keywords: {{ taskfile.keywords }}</p> -->
+        <p>{{ taskfile.file_description|default:"n/a" }}</p>
+        <br>
+        <p style="font-weight: 500;">Keywords:</p>
+        <p>{{ taskfile.keywords|default:"n/a" }}</p>
         <br>
         <p style="font-weight: 500;">Uploaded on:</p>
         <p>{{ taskfile.timestamp }}</p>
+        <br>
+        <p style="font-weight: 500;">Uploaded by:</p>
+        <p>{{ taskfile.uploaded_by }}</p>
     </div>
 </div>
 
